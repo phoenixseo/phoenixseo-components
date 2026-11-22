@@ -7,31 +7,35 @@ const tags = capabilities();
 const showcase = 'vinyl';
 const showcaseHtml = preview(showcase);
 const showcaseCss = componentCss(showcase);
-const total = data.components.length;
 ---
 
 <Base
   title="PhoenixSEO Components — free page components for WordPress"
-  description={`${total} free page components for WordPress: real markup, no JavaScript, stored as values instead of HTML. Download one, unzip it into your theme.`}
+  description="Build your own page components for WordPress: fields, markup and stylesheet in one folder. A page stores values, never HTML. Free, GPL-2.0-or-later."
   path="/"
 >
   <style is:inline set:html={showcaseCss}></style>
 
   <section class="wrap hero">
     <p class="eyebrow">Free · GPL-2.0-or-later · no account, no licence key</p>
-    <h1>Page components that keep the markup out of the content.</h1>
+    <h1>Write a component once. Every page follows.</h1>
     <p class="lede">
-      {total} components for WordPress, each one a directory with a field definition, a template
-      and a stylesheet. A page stores which components it uses and what their fields hold — never
-      how they look. Change a template once and every page follows.
+      A component is a folder: the fields, the markup, the stylesheet. A page stores which
+      component sits where and what its fields hold — never the HTML. The markup is read from
+      disk on each page load, so editing the template changes every instance at once.
     </p>
     <p class="lede lede--second">
-      It costs nothing, and there is no second invoice behind that word. No subscription, no
-      account, no usage counter — and the one dependency, a field plugin, has a free edition that
-      is enough.
+      You build the hero, the FAQ, the pricing table you actually need, shaped the way the design
+      asks for. Copy the folder into the next project and the fields come along; swap
+      <code>component.css</code> and the same component wears that site's look.
+    </p>
+    <p class="lede lede--second">
+      Block patterns bake their markup into the post and leave it there. This does not. And it
+      costs nothing: no account, no licence key, one dependency — Advanced Custom Fields in its
+      free edition, or Secure Custom Fields — and the builder renders repeaters and groups itself.
     </p>
     <div class="hero__actions">
-      <a class="button" href="/components/">Browse {total} components</a>
+      <a class="button" href="/components/">Browse the components</a>
       <a class="button button--quiet" href="#free">What it costs</a>
     </div>
     <dl class="facts">
@@ -89,7 +93,7 @@ const total = data.components.length;
       <div>
         <dt>Licence</dt>
         <dd>
-          GPL-2.0-or-later, for the plugin and for all {total} components. Any number of sites,
+          GPL-2.0-or-later, for the plugin and for every component here. Any number of sites,
           commercial work included. There is no per-site fee because there is nobody to pay.
         </dd>
       </div>
@@ -160,7 +164,7 @@ const total = data.components.length;
   </section>
 
   <section class="wrap" aria-labelledby="tags-title">
-    <h2 id="tags-title">Not all ten are the same kind of component</h2>
+    <h2 id="tags-title">Not every component needs a template</h2>
     <p class="soft">
       Some need no code at all and come out of the generic output. Others carry a template because
       a value has to be computed, an element carries meaning, or a rule spans several rows. Those
@@ -182,16 +186,14 @@ const total = data.components.length;
   <section class="wrap prose" aria-labelledby="why-title">
     <h2 id="why-title">Why values and not markup</h2>
     <p>
-      A CMS separates content from presentation. Most page builders do the opposite: they store the
-      content together with the HTML, as a block attribute or a serialised tree. Whoever changes a
-      component afterwards has to follow up on every page — and every page keeps a stale copy of
-      the design.
+      The difference shows up on the second edit. A page that carries its own HTML has to be found
+      and changed every time the design moves, and until someone does, it keeps a stale copy of the
+      old design. A page that carries values follows the template the next time it renders.
     </p>
     <p>
-      Here a page holds only the values. The markup lives in the component's directory, and the
-      savings are measurable: thirty components come out as one meta entry of 12,583 bytes instead
-      of 1,933 rows, and saving them costs 4 queries instead of 1,807. Those numbers come from the
-      plugin's own test suite, not from a slide.
+      The saving is measurable: thirty components come out as one meta entry of 12,583 bytes
+      instead of 1,933 rows, and saving them costs 4 queries instead of 1,807. Those numbers come
+      from the plugin's own test suite, not from a slide.
     </p>
     <p>
       <a href="/format/">How the format works, and how to write your own</a>

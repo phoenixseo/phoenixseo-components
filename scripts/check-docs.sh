@@ -95,6 +95,13 @@ else
   else
     bad 'start page does not say there is no account'
   fi
+  # The size of the library is not an argument: it grows, and anyone can add
+  # to it. A count in the hero reads as a limit, so the page must not make one.
+  if grep -qE '[0-9]+ (page )?components' "$home"; then
+    bad "start page states a component count: $(grep -oE '[0-9]+ (page )?components' "$home" | head -1)"
+  else
+    ok 'no component count on the start page'
+  fi
 fi
 
 echo "docs: no bare 'ACF or SCF'"
