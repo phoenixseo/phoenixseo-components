@@ -59,6 +59,65 @@ if [ "$missing_nav" -eq 0 ]; then
   ok "every page links to /docs/"
 fi
 
+echo "home page"
+# The start page has to answer the cost question itself, not only the docs.
+# These are literal checks on purpose: the gate fails when the sentence is
+# removed, it does not try to judge prose.
+home="dist/index.html"
+if [ ! -f "$home" ]; then
+  bad "missing $home"
+else
+  ok "$home"
+  if grep -q 'id="free"' "$home"; then
+    ok 'section #free'
+  else
+    bad 'no section id="free" on the start page'
+  fi
+  if grep -q 'href="#free"' "$home"; then
+    ok 'a link jumps to #free'
+  else
+    bad 'nothing on the start page links to #free'
+  fi
+  if grep -q 'GPL-2.0-or-later' "$home"; then
+    ok 'licence named'
+  else
+    bad 'licence GPL-2.0-or-later not named on the start page'
+  fi
+  # "free edition is enough" is the claim the page makes about ACF; both
+  # halves have to survive an edit.
+  if grep -qi 'free edition is enough' "$home"; then
+    ok 'free edition of the field plugin named as sufficient'
+  else
+    bad 'start page does not say that the free edition of the field plugin is enough'
+  fi
+  if grep -qi 'no account' "$home"; then
+    ok 'no account'
+  else
+    bad 'start page does not say there is no account'
+  fi
+fi
+
+echo "docs: no bare 'ACF or SCF'"
+# A chapter that offers the two hosts as a choice has to say that the free
+# edition is enough, otherwise the start page and the manual contradict each
+# other. Pages that name ACF only in passing (field types, JSON output) are
+# not part of that rule, so the trigger is the pair ACF + Secure Custom Fields.
+docs_pair=0
+while IFS= read -r page; do
+  if ! grep -qi 'ACF' "$page" || ! grep -qi 'Secure Custom Fields' "$page"; then
+    continue
+  fi
+  docs_pair=$((docs_pair + 1))
+  if grep -qiE 'free edition|free version|free for this|free of charge' "$page"; then
+    ok "$page names the free edition"
+  else
+    bad "$page offers ACF and Secure Custom Fields without saying that the free edition is enough"
+  fi
+done < <(find dist/docs -name 'index.html' | sort)
+if [ "$docs_pair" -lt 2 ]; then
+  bad "only $docs_pair chapter(s) offer both hosts — expected the install page and the overview"
+fi
+
 echo "images"
 while IFS= read -r src; do
   if [ -f "dist${src#/}" ] || [ -f "dist${src}" ]; then

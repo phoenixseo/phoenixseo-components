@@ -18,17 +18,28 @@ const total = data.components.length;
   <style is:inline set:html={showcaseCss}></style>
 
   <section class="wrap hero">
-    <p class="eyebrow">Component library · GPL-2.0-or-later</p>
+    <p class="eyebrow">Free · GPL-2.0-or-later · no account, no licence key</p>
     <h1>Page components that keep the markup out of the content.</h1>
     <p class="lede">
       {total} components for WordPress, each one a directory with a field definition, a template
       and a stylesheet. A page stores which components it uses and what their fields hold — never
       how they look. Change a template once and every page follows.
     </p>
+    <p class="lede lede--second">
+      It costs nothing, and there is no second invoice behind that word. No subscription, no
+      account, no usage counter — and the one dependency, a field plugin, has a free edition that
+      is enough.
+    </p>
     <div class="hero__actions">
       <a class="button" href="/components/">Browse {total} components</a>
-      <a class="button button--quiet" href="#install">Install one in a minute</a>
+      <a class="button button--quiet" href="#free">What it costs</a>
     </div>
+    <dl class="facts">
+      <div><dt>Licence</dt><dd>GPL-2.0-or-later</dd></div>
+      <div><dt>Account</dt><dd>none</dd></div>
+      <div><dt>Build step</dt><dd>none</dd></div>
+      <div><dt>Dependency</dt><dd>ACF free or SCF</dd></div>
+    </dl>
   </section>
 
   <section class="wrap showcase" aria-labelledby="showcase-title">
@@ -43,6 +54,70 @@ const total = data.components.length;
     <div class="preview preview--sunk">
       <Fragment set:html={showcaseHtml} />
     </div>
+  </section>
+
+  <section class="wrap pair" aria-labelledby="portable-title">
+    <h2 id="portable-title">One library, many sites</h2>
+    <div class="pair__cols">
+      <div>
+        <h3>The component travels</h3>
+        <p class="small soft">
+          A component is three files in one folder: <code>definition.json</code>,
+          <code>render.php</code>, <code>component.css</code>. Copy the folder into another site's
+          <code>wp-content/sdc-components/</code> and it works there — same fields, same markup,
+          nothing to import and nothing to register twice. The pages bring their own values; that
+          is all a site has to add.
+        </p>
+      </div>
+      <div>
+        <h3>The look stays a per-site decision</h3>
+        <p class="small soft">
+          Where two projects should not look alike, keep the values and change the stylesheet. The
+          lookup is child theme, parent theme, <code>wp-content/sdc-components/</code>, then the
+          plugin — first match wins, for the CSS exactly as for the markup. A theme that ships its
+          own <code>component.css</code> for <code>faq</code> restyles every FAQ on that site,
+          without touching a page's content and without forking the plugin.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="free" aria-labelledby="free-title">
+    <h2 id="free-title">What it costs</h2>
+    <p class="soft">Nothing. Not a trial, not a free tier, not free until the site gets traffic.</p>
+    <dl class="cost">
+      <div>
+        <dt>Licence</dt>
+        <dd>
+          GPL-2.0-or-later, for the plugin and for all {total} components. Any number of sites,
+          commercial work included. There is no per-site fee because there is nobody to pay.
+        </dd>
+      </div>
+      <div>
+        <dt>Account</dt>
+        <dd>
+          None. No key, no login, no usage counter. The plugin runs on your server and reads files
+          from the file system; there is no service behind it that could send an invoice.
+        </dd>
+      </div>
+      <div>
+        <dt>Field plugin</dt>
+        <dd>
+          Advanced Custom Fields in its free edition, or Secure Custom Fields, which is free on
+          wordpress.org. The free edition is enough: ACF's paid tier adds repeaters, flexible
+          content and clone, and the builder renders those containers itself for exactly that
+          reason. It asks the host only for single-value fields, where the free and the paid
+          edition are the same.
+        </dd>
+      </div>
+      <div>
+        <dt>Build step</dt>
+        <dd>
+          None. PHP, JSON and CSS, edited where they lie. No npm install, no compilation, no deploy
+          pipeline for a colour change.
+        </dd>
+      </div>
+    </dl>
   </section>
 
   <section class="wrap" id="install" aria-labelledby="install-title">
@@ -74,8 +149,8 @@ const total = data.components.length;
       <div class="install__note">
         <p class="eyebrow">Requires</p>
         <p class="small">
-          WordPress 6.4 or newer, PHP 7.4 or newer, and either Advanced Custom Fields (free) or
-          Secure Custom Fields. No build step, no JavaScript in the frontend.
+          WordPress 6.4 or newer, PHP 7.4 or newer, and either Advanced Custom Fields — the free
+          edition is enough — or Secure Custom Fields. No build step, no JavaScript in the frontend.
         </p>
         <p class="small">
           <a href="https://github.com/phoenixseo/sdc-page-builder">Plugin source and releases</a>
@@ -139,6 +214,109 @@ const total = data.components.length;
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 1.75rem;
+  }
+
+  .lede--second {
+    margin-top: 0.85rem;
+    font-size: 1.05rem;
+  }
+
+  /* Four facts under the hero: the answer to "what does this cost" before
+     anyone has to scroll for it. */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    max-width: 46rem;
+    margin: 2.25rem 0 0;
+  }
+
+  .facts > div {
+    background: var(--paper);
+    padding: 0.65rem 0.85rem;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .facts dt {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-faint);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--ink);
+  }
+
+  .pair__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 2.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .pair__cols h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+    max-width: 34ch;
+  }
+
+  .pair__cols p {
+    margin: 0;
+    max-width: 48ch;
+    line-height: 1.65;
+  }
+
+  @media (max-width: 46rem) {
+    .pair__cols {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .cost {
+    display: grid;
+    gap: 0;
+    max-width: 72ch;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  .cost > div {
+    display: grid;
+    grid-template-columns: minmax(6rem, 8.5rem) minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-block: 0.95rem;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .cost dt {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-faint);
+    padding-block-start: 0.25rem;
+  }
+
+  .cost dd {
+    margin: 0;
+    max-width: 62ch;
+  }
+
+  @media (max-width: 34rem) {
+    .cost > div {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
   }
 
   .showcase {
