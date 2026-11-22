@@ -125,6 +125,28 @@ if [ "$docs_pair" -lt 2 ]; then
   bad "only $docs_pair chapter(s) offer both hosts — expected the install page and the overview"
 fi
 
+echo "analytics"
+# The tag lives in the one layout file, which means it can go missing on a page
+# that builds its own head. Each built page must load the stream exactly once,
+# must carry the consent default, and must not pull in the main site's container.
+ga_id='G-6FMDGG2TJP'
+ga_bad=0
+while IFS= read -r page; do
+  loader=$(grep -c "gtag/js?id=$ga_id" "$page" || true)
+  cfg=$(grep -c "gtag('config', '$ga_id'" "$page" || true)
+  consent=$(grep -c "gtag('consent', 'default'" "$page" || true)
+  gtm=$(grep -c 'GTM-' "$page" || true)
+  # A static loader would fetch Google before the visitor agreed.
+  static=$(grep -c 'src="https://www.googletagmanager.com' "$page" || true)
+  if [ "$loader" -ne 1 ] || [ "$cfg" -ne 1 ] || [ "$consent" -ne 1 ] || [ "$gtm" -ne 0 ] || [ "$static" -ne 0 ]; then
+    bad "$page: loader=$loader config=$cfg consent=$consent gtm=$gtm static=$static (expected 1/1/1/0/0)"
+    ga_bad=1
+  fi
+done < <(find dist -name '*.html' | sort)
+if [ "$ga_bad" -eq 0 ]; then
+  ok "every page knows $ga_id once, with consent default, no GTM container and no tag before consent"
+fi
+
 echo "images"
 while IFS= read -r src; do
   if [ -f "dist${src#/}" ] || [ -f "dist${src}" ]; then

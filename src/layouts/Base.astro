@@ -36,6 +36,47 @@ const isActive = (href: string) =>
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+
+    <!--
+      Analytics for this subdomain only, in its own GA4 stream. The main site's
+      GTM container is deliberately not used here: it carries Ads remarketing,
+      session recording and a CRM pixel, none of which belong on a manual.
+
+      The library is not loaded at all until the visitor agrees — no request to
+      Google before that, not even a cookieless ping. Consent Mode gets its
+      default first, then `config` runs once, which is the single page_view.
+      Loading the tag earlier and firing the event by hand counts the visit
+      twice; measured, not assumed.
+
+      No integrity hash on the loader: Google serves gtag.js per property and
+      rewrites it, so a pinned hash would break the tag. The tag is the
+      documented gtag.js snippet, unchanged.
+    -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      (function () {
+        var granted = false;
+        try { granted = localStorage.getItem('phx-analytics') === 'granted'; } catch (e) {}
+        gtag('consent', 'default', {
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+          analytics_storage: granted ? 'granted' : 'denied',
+        });
+        window.phxAnalytics = function () {
+          if (window.phxAnalyticsLoaded) return;
+          window.phxAnalyticsLoaded = true;
+          gtag('js', new Date());
+          gtag('config', 'G-6FMDGG2TJP');
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-6FMDGG2TJP';
+          document.head.appendChild(s);
+        };
+        if (granted) window.phxAnalytics();
+      })();
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
@@ -66,5 +107,43 @@ const isActive = (href: string) =>
         <a href="https://phoenixseo.de">phoenixseo.de</a>
       </div>
     </footer>
+    <!--
+      The banner is the only way the tag ever gets consent, so it is part of the
+      layout, not an add-on: it appears when no choice is stored, keeps the
+      choice in localStorage, and never blocks the page.
+    -->
+    <div class="consent" id="consent" hidden>
+      <div class="wrap consent__inner">
+        <p class="consent__text">
+          This site counts visits with Google Analytics. Until you agree, nothing is sent and
+          nothing is stored on your device. <a href="https://phoenixseo.de/datenschutz">Privacy</a>
+        </p>
+        <div class="consent__actions">
+          <button class="button" type="button" data-consent="granted">Allow analytics</button>
+          <button class="button button--quiet" type="button" data-consent="denied">No thanks</button>
+        </div>
+      </div>
+    </div>
+    <script is:inline>
+      (function () {
+        var box = document.getElementById('consent');
+        var key = 'phx-analytics';
+        var stored = null;
+        try { stored = localStorage.getItem(key); } catch (e) {}
+        if (stored || !box) return;
+        box.hidden = false;
+        box.addEventListener('click', function (ev) {
+          var btn = ev.target.closest ? ev.target.closest('[data-consent]') : null;
+          if (!btn) return;
+          var choice = btn.getAttribute('data-consent');
+          try { localStorage.setItem(key, choice); } catch (e) {}
+          box.hidden = true;
+          if (choice === 'granted' && typeof gtag === 'function') {
+            gtag('consent', 'update', { analytics_storage: 'granted' });
+            if (typeof window.phxAnalytics === 'function') window.phxAnalytics();
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

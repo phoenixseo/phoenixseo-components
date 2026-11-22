@@ -302,6 +302,48 @@
     color: var(--ink);
   }
 
+  /* Consent bar: fixed to the bottom edge, one row on wide screens, stacked on
+     a phone. `display: flex` beats the hidden attribute, so it is spelled out. */
+  .consent {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-top: 1px solid var(--rule-strong);
+    box-shadow: 0 -10px 30px rgb(22 24 29 / 0.07);
+    padding-block: 0.9rem;
+  }
+
+  .consent[hidden] {
+    display: none;
+  }
+
+  .consent__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+  }
+
+  .consent__text {
+    margin: 0;
+    max-width: 58ch;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  .consent__text a {
+    color: var(--ink-soft);
+  }
+
+  .consent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
   .chip {
     display: inline-flex;
     align-items: center;
