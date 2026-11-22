@@ -425,6 +425,11 @@ unzip ${entry.type}.zip -d sdc-components/
 
   .part__body {
     display: grid;
+    /* One explicit track that may shrink below its content's max-content width.
+       With an implicit auto track the widest child (the rendered preview of a
+       three-column component) widened the track past the viewport and the whole
+       page scrolled sideways on a phone. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.85rem;
     min-width: 0;
     justify-items: start;
@@ -493,6 +498,9 @@ unzip ${entry.type}.zip -d sdc-components/
   .stage {
     position: relative;
     width: 100%;
+    /* A component with three columns cannot reflow below its min-content width;
+       let the preview scroll inside its own box instead of widening the page. */
+    overflow-x: auto;
     margin-block-start: 0.35rem;
     padding: clamp(1.9rem, 3vw, 2.4rem) clamp(1rem, 2.5vw, 1.5rem)
       clamp(1rem, 2.5vw, 1.5rem);
@@ -583,6 +591,10 @@ unzip ${entry.type}.zip -d sdc-components/
   /* --- 04 code: horizontal tabs --- */
   .tabs {
     width: 100%;
+    /* The panel sits in a grid; without this it takes its min-content width and
+       long code lines push the whole page sideways on a phone. The <pre>
+       scrolls inside instead. */
+    min-width: 0;
     margin-block-start: 0.35rem;
   }
 
@@ -676,6 +688,7 @@ unzip ${entry.type}.zip -d sdc-components/
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
     padding: 0.4rem 0.5rem 0.4rem 0.8rem;
     background: var(--paper-sunk);
     border-block-end: 1px solid var(--rule);
@@ -685,6 +698,7 @@ unzip ${entry.type}.zip -d sdc-components/
     font-size: 0.6875rem;
     color: var(--ink-soft);
     margin: 0;
+    overflow-wrap: anywhere;
   }
 
   /* With JavaScript the panel header only repeats the tab — drop it, keep the
