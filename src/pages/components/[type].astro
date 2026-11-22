@@ -190,18 +190,71 @@ unzip ${entry.type}.zip -d sdc-components/
             : `${files.length} files, one directory. Copy them, change them, keep them.`}
         </p>
 
-        <div class="files">
+        <div class:list={['tabs', files.length === 1 && 'tabs--single']} data-tabs>
           {
-            files.map((file) => (
-              <details class="disclosure">
-                <summary>
-                  <span class="mono">{file.name}</span>
-                  <span class="faint mono small">{(file.code.length / 1024).toFixed(1)} kB</span>
-                </summary>
-                <pre><code set:html={escaped(file.code)} /></pre>
-              </details>
-            ))
+            files.length > 1 && (
+              <div class="tabs__bar" role="tablist" aria-label="Source files of this component">
+                {files.map((file, i) => (
+                  <button
+                    class="tabs__tab"
+                    type="button"
+                    role="tab"
+                    id={`tab-${entry.type}-${i}`}
+                    aria-controls={`pane-${entry.type}-${i}`}
+                    aria-selected={i === 0 ? 'true' : 'false'}
+                    tabindex={i === 0 ? 0 : -1}
+                    data-tab
+                  >
+                    <span class="tabs__name mono">{file.name}</span>
+                    <span class="tabs__size mono">{(file.code.length / 1024).toFixed(1)} kB</span>
+                  </button>
+                ))}
+              </div>
+            )
           }
+
+          <div class="tabs__panels">
+            {
+              files.map((file, i) => (
+                <section
+                  class="tabs__panel"
+                  role="tabpanel"
+                  id={`pane-${entry.type}-${i}`}
+                  aria-labelledby={`tab-${entry.type}-${i}`}
+                  data-panel
+                >
+                  <div class="tabs__tools">
+                    <p class="tabs__file mono">
+                      {file.name} <span class="faint">· {(file.code.length / 1024).toFixed(1)} kB</span>
+                    </p>
+                    <button class="copy" type="button" data-copy>
+                      <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                        <path
+                          d="M5.5 5.5V3.75A1.25 1.25 0 0 1 6.75 2.5h5.5a1.25 1.25 0 0 1 1.25 1.25v5.5a1.25 1.25 0 0 1-1.25 1.25H10.5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.3"
+                          stroke-linecap="round"
+                        />
+                        <rect
+                          x="2.6"
+                          y="5.6"
+                          width="8"
+                          height="8"
+                          rx="1.25"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.3"
+                        />
+                      </svg>
+                      <span data-copy-label>Copy</span>
+                    </button>
+                  </div>
+                  <pre><code set:html={escaped(file.code)} /></pre>
+                </section>
+              ))
+            }
+          </div>
         </div>
 
         <p class="small soft">
@@ -216,6 +269,106 @@ unzip ${entry.type}.zip -d sdc-components/
       <a href={`/components/${next.type}/`}>{next.title} →</a>
     </nav>
   </div>
+
+  <script>
+    // Tabs are progressive enhancement: without this script every file is
+    // visible, stacked and labelled. With it, one panel shows at a time.
+    const writeClipboard = (text: string): Promise<void> => {
+      if (navigator.clipboard?.writeText) {
+        return navigator.clipboard.writeText(text);
+      }
+
+      return new Promise((resolve, reject) => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.insetBlockStart = '-1000px';
+        document.body.append(area);
+        area.select();
+
+        try {
+          document.execCommand('copy') ? resolve() : reject(new Error('copy refused'));
+        } catch (error) {
+          reject(error);
+        } finally {
+          area.remove();
+        }
+      });
+    };
+
+    for (const root of document.querySelectorAll<HTMLElement>('[data-tabs]')) {
+      const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+      const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+
+      if (tabs.length !== panels.length || tabs.length === 0) continue;
+
+      root.dataset.ready = '';
+
+      const select = (index: number, focus = false) => {
+        tabs.forEach((tab, i) => {
+          const active = i === index;
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+          tab.tabIndex = active ? 0 : -1;
+          panels[i].hidden = !active;
+        });
+
+        if (focus) tabs[index].focus();
+      };
+
+      select(0);
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => select(i));
+
+        tab.addEventListener('keydown', (event) => {
+          const last = tabs.length - 1;
+          let target: number | null = null;
+
+          if (event.key === 'ArrowRight') target = i === last ? 0 : i + 1;
+          else if (event.key === 'ArrowLeft') target = i === 0 ? last : i - 1;
+          else if (event.key === 'Home') target = 0;
+          else if (event.key === 'End') target = last;
+
+          if (target === null) return;
+
+          event.preventDefault();
+          select(target, true);
+        });
+      });
+
+      for (const panel of panels) {
+        const button = panel.querySelector<HTMLButtonElement>('[data-copy]');
+        const label = button?.querySelector<HTMLElement>('[data-copy-label]');
+
+        if (!button || !label) continue;
+
+        const idle = label.textContent ?? 'Copy';
+        let timer = 0;
+
+        button.addEventListener('click', async () => {
+          // textContent of the highlighted code: entities are already decoded,
+          // so the clipboard gets the same bytes as the file on disk.
+          const code = panel.querySelector('pre code')?.textContent ?? '';
+
+          try {
+            await writeClipboard(code);
+            button.dataset.state = 'done';
+            label.textContent = 'Copied';
+          } catch {
+            button.dataset.state = 'failed';
+            label.textContent = 'Copy failed';
+          }
+
+          window.clearTimeout(timer);
+          timer = window.setTimeout(() => {
+            delete button.dataset.state;
+            label.textContent = idle;
+          }, 1800);
+        });
+      }
+    }
+  </script>
 </Base>
 
 <style>
@@ -417,37 +570,161 @@ unzip ${entry.type}.zip -d sdc-components/
     overflow-x: auto;
   }
 
-  /* --- 04 code --- */
-  .files {
+  /* --- 04 code: horizontal tabs --- */
+  .tabs {
     width: 100%;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    overflow: hidden;
     margin-block-start: 0.35rem;
   }
 
-  .files .disclosure {
-    border: 0;
-    border-radius: 0;
+  .tabs__bar {
+    display: flex;
+    gap: 0.15rem;
+    align-items: flex-end;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    border-block-end: 1px solid var(--rule-strong);
+    padding-inline: 0.15rem;
   }
 
-  .files .disclosure + .disclosure {
-    border-top: 1px solid var(--rule);
+  .tabs__tab {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid transparent;
+    border-block-end: 0;
+    border-start-start-radius: 5px;
+    border-start-end-radius: 5px;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    margin-block-end: -1px;
+    position: relative;
+    white-space: nowrap;
   }
 
-  .files summary {
+  .tabs__name {
+    font-size: 0.75rem;
+  }
+
+  .tabs__size {
+    font-size: 0.625rem;
+    color: var(--ink-faint);
+  }
+
+  .tabs__tab:hover {
+    color: var(--ink);
+    background: var(--paper-sunk);
+  }
+
+  /* The selected tab is welded to the panel: same background, no bottom rule,
+     its own top and side rules. That is what makes it read as a tab rather
+     than a chip. */
+  .tabs__tab[aria-selected='true'] {
+    color: var(--ink);
+    background: var(--paper);
+    border-color: var(--rule-strong);
+    border-block-end: 1px solid var(--paper);
+    font-weight: 600;
+  }
+
+  .tabs__tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .tabs__panels {
+    border: 1px solid var(--rule-strong);
+    border-block-start: 0;
+    border-end-start-radius: var(--radius);
+    border-end-end-radius: var(--radius);
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  /* One file, no tab bar: the container carries the full frame itself. */
+  .tabs--single .tabs__panels {
+    border-block-start: 1px solid var(--rule-strong);
+    border-start-start-radius: var(--radius);
+    border-start-end-radius: var(--radius);
+  }
+
+  .tabs__panel {
+    margin: 0;
+  }
+
+  /* No JavaScript: every file is visible, stacked, with its name on top. */
+  .tabs__panel + .tabs__panel {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .tabs__tools {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 1rem;
-    align-items: baseline;
-    font-size: 0.8125rem;
+    padding: 0.4rem 0.5rem 0.4rem 0.8rem;
+    background: var(--paper-sunk);
+    border-block-end: 1px solid var(--rule);
   }
 
-  .files pre {
+  .tabs__file {
+    font-size: 0.6875rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* With JavaScript the panel header only repeats the tab — drop it, keep the
+     copy button. */
+  .tabs[data-ready] .tabs__file {
+    display: none;
+  }
+
+  .tabs__panel pre {
     max-height: 34rem;
     margin: 0;
     border: 0;
     border-radius: 0;
+  }
+
+  .copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font: inherit;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+
+  .copy:hover {
+    color: var(--ink);
+    border-color: var(--ink-faint);
+  }
+
+  .copy:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .copy[data-state='done'] {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .copy[data-state='failed'] {
+    color: #a3372c;
+    border-color: #a3372c;
   }
 
   /* --- next --- */
