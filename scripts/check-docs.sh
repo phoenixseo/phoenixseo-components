@@ -138,8 +138,12 @@ while IFS= read -r page; do
   gtm=$(grep -c 'GTM-' "$page" || true)
   # A static loader would fetch Google before the visitor agreed.
   static=$(grep -c 'src="https://www.googletagmanager.com' "$page" || true)
-  if [ "$loader" -ne 1 ] || [ "$cfg" -ne 1 ] || [ "$consent" -ne 1 ] || [ "$gtm" -ne 0 ] || [ "$static" -ne 0 ]; then
-    bad "$page: loader=$loader config=$cfg consent=$consent gtm=$gtm static=$static (expected 1/1/1/0/0)"
+  # GA4 leaves its cookies in place when consent is withdrawn, so the page has
+  # to expire them itself — a banner without that handler looks compliant and
+  # is not.
+  cleanup=$(grep -c 'dropAnalyticsCookies' "$page" || true)
+  if [ "$loader" -ne 1 ] || [ "$cfg" -ne 1 ] || [ "$consent" -ne 1 ] || [ "$gtm" -ne 0 ] || [ "$static" -ne 0 ] || [ "$cleanup" -lt 2 ]; then
+    bad "$page: loader=$loader config=$cfg consent=$consent gtm=$gtm static=$static cleanup=$cleanup (expected 1/1/1/0/0/≥2)"
     ga_bad=1
   fi
 done < <(find dist -name '*.html' | sort)

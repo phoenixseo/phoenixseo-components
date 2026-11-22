@@ -68,6 +68,10 @@ const isActive = (href: string) =>
           if (window.phxAnalyticsLoaded) return;
           window.phxAnalyticsLoaded = true;
           gtag('js', new Date());
+          // GA4 writes its cookies to the registrable domain, not the host:
+          // measured on this subdomain, they land on .phoenixseo.de even with
+          // cookie_domain pinned here. So the withdrawal handler below expires
+          // them on that domain instead of pretending we can keep them local.
           gtag('config', 'G-6FMDGG2TJP');
           var s = document.createElement('script');
           s.async = true;
@@ -132,6 +136,24 @@ const isActive = (href: string) =>
         try { stored = localStorage.getItem(key); } catch (e) {}
         if (stored || !box) return;
         box.hidden = false;
+        // Declining must also undo an earlier agreement: GA4 leaves its cookies
+        // in place when consent is withdrawn, so they are expired here by hand.
+        // They sit on the registrable domain, which is also where the main
+        // site's property writes its own _ga — withdrawing here therefore
+        // resets that client id too. Both properties are ours, and a cookie
+        // that outlives the consent it was set under is the worse problem.
+        function dropAnalyticsCookies() {
+          var host = location.hostname;
+          var parent = '.' + host.replace(/^www\./, '').split('.').slice(-2).join('.');
+          var targets = ['', '; domain=' + host, '; domain=' + parent];
+          var names = document.cookie.split(';').map(function (c) { return c.split('=')[0].trim(); });
+          names.forEach(function (name) {
+            if (name !== '_ga' && !/^_ga_/.test(name) && name !== '_gid' && name !== '_gcl_au') return;
+            targets.forEach(function (d) {
+              document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT' + d;
+            });
+          });
+        }
         box.addEventListener('click', function (ev) {
           var btn = ev.target.closest ? ev.target.closest('[data-consent]') : null;
           if (!btn) return;
@@ -141,6 +163,8 @@ const isActive = (href: string) =>
           if (choice === 'granted' && typeof gtag === 'function') {
             gtag('consent', 'update', { analytics_storage: 'granted' });
             if (typeof window.phxAnalytics === 'function') window.phxAnalytics();
+          } else if (choice === 'denied') {
+            dropAnalyticsCookies();
           }
         });
       })();
