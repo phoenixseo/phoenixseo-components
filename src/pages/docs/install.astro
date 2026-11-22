@@ -1,0 +1,157 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+
+<Docs
+  title="Install — PhoenixSEO Page Builder docs"
+  description="Requirements, installation and activation of the PhoenixSEO Page Builder, and a tour of the component screen it adds to wp-admin."
+  path="/docs/install/"
+  doc="install"
+  lede="Chapter 02"
+>
+  <h1>Install</h1>
+
+  <p class="lede">
+    One plugin, one dependency, one new screen. Fifteen minutes if PHP and the file system behave, and they
+    usually do.
+  </p>
+
+  <h2>What it needs</h2>
+
+  <table>
+    <thead>
+      <tr><th>Requirement</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>WordPress 6.4 or newer</td>
+        <td>The plugin registers its block category through <code>block_categories_all</code>, which needs 5.8; 6.4 is where the tested baseline sits.</td>
+      </tr>
+      <tr>
+        <td>PHP 7.4 or newer</td>
+        <td>Typed properties and arrow functions are used throughout.</td>
+      </tr>
+      <tr>
+        <td>ACF or Secure Custom Fields, active</td>
+        <td>They provide the field types and the admin UI for filling them in. The plugin checks for <code>acf_get_field_group()</code>; SCF answers to the same function because it stays drop-in compatible.</td>
+      </tr>
+      <tr>
+        <td>A writable <code>wp-content/sdc-components/</code></td>
+        <td>Only if you want to create, duplicate or delete components in wp-admin. Shipped components work without it.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Install the plugin</h2>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <strong>Get the ZIP.</strong> Either the packaged plugin, or — if you work from the repository —
+        the <code>plugin/</code> directory, zipped so that the archive contains a single folder.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Upload it.</strong> <em>Plugins → Add New → Upload Plugin → Choose file → Install Now</em>.
+        On a host without upload rights, unpack it into <code>wp-content/plugins/</code> instead; the result
+        is the same directory.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Activate.</strong> The plugin needs no settings screen and writes nothing on activation.
+        Its components are read from the file system on every request that needs them.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Check the menu.</strong> A new entry <em>Page Builder</em> sits in the sidebar. It is the
+        only screen the plugin adds.
+      </div>
+    </li>
+  </ol>
+
+  <h2>The component screen</h2>
+
+  <p>
+    <em>Page Builder</em> opens a page titled <em>PhoenixSEO Components</em>. It has three sections, one
+    below the other: the catalog, a form for a new component, and an import form. No tabs — the page is
+    long, and every section is reachable by scrolling or by the browser's own find.
+  </p>
+
+  <figure class="shot">
+    <img
+      src="/docs/screen-components.webp"
+      width="1400"
+      height="861"
+      alt="The PhoenixSEO Components screen in wp-admin: a table of components with columns for fields, template, storage and usage, each row offering Export and Duplicate."
+    />
+    <figcaption>
+      The catalog. <code>Plugin</code> in the Storage column means the component ships with the plugin and
+      is read-only here; <code>wp-content</code> means it is a site component and can be edited.
+    </figcaption>
+  </figure>
+
+  <p>One row per component, six columns:</p>
+
+  <table>
+    <thead>
+      <tr><th>Column</th><th>Shows</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Component</td>
+        <td>The name from the definition, its type as a slug, and the description — the same text the inserter shows.</td>
+      </tr>
+      <tr>
+        <td>Fields</td>
+        <td>How many fields the component defines. Nested fields count once at the top level.</td>
+      </tr>
+      <tr>
+        <td>Template</td>
+        <td>The <code>render.php</code> being used, or a dash when the component renders generically.</td>
+      </tr>
+      <tr>
+        <td>Storage</td>
+        <td>Which directory the definition came from, and whether it can be edited here.</td>
+      </tr>
+      <tr>
+        <td>Usage</td>
+        <td>How many pages and instances use it. <em>not placed</em> means no page has it yet.</td>
+      </tr>
+      <tr>
+        <td>Actions</td>
+        <td><em>Edit</em> for site components, <em>Export</em> and <em>Duplicate</em> for all of them, <em>Delete</em> for site components.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>When something is locked</h2>
+
+  <p>
+    Two conditions switch parts of the screen off, and both say so at the top of the page rather than
+    failing on submit:
+  </p>
+
+  <ul>
+    <li>
+      <strong>The target folder is not writable.</strong> The catalog is still shown, but creating,
+      duplicating, importing and deleting are locked. Fix the permissions on
+      <code>wp-content/sdc-components/</code> — the plugin prints the path it tried.
+    </li>
+    <li>
+      <strong>A page has lost a component.</strong> If a component disappears while pages still reference
+      it, those pages render nothing where it used to be. The plugin counts them and points at
+      <code>wp sdc-pb repair</code>, which reports and, with <code>--apply</code>, re-attaches what is
+      missing. It is a WP-CLI command on purpose: writing to other people's pages from a button is a
+      decision for the site owner.
+    </li>
+  </ul>
+
+  <h2>Next</h2>
+
+  <p>
+    Nothing is on a page yet. <a href="/docs/use/">Chapter 03</a> puts a component there.
+  </p>
+</Docs>

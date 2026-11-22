@@ -10,11 +10,17 @@ interface Props {
 const { title, description, path } = Astro.props;
 const canonical = new URL(path, Astro.site).href;
 const nav = [
+  { href: '/docs/', label: 'Docs' },
   { href: '/components/', label: 'Components' },
   { href: '/format/', label: 'The format' },
   { href: '/catalog.json', label: 'catalog.json' },
 ];
 const current = Astro.url.pathname;
+
+// A chapter page belongs to its section: /docs/install/ highlights Docs,
+// /components/vinyl/ highlights Components.
+const isActive = (href: string) =>
+  href === '/' ? current === '/' : current === href || current.startsWith(href);
 ---
 
 <!doctype html>
@@ -40,7 +46,7 @@ const current = Astro.url.pathname;
         <nav class="site-nav" aria-label="Main">
           {
             nav.map((item) => (
-              <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
               </a>
             ))

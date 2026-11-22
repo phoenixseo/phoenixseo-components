@@ -1,0 +1,166 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+
+<Docs
+  title="Use a component — PhoenixSEO Page Builder docs"
+  description="How to place a component on a page in the block editor, fill its fields, duplicate an instance, and duplicate a component type into an editable copy."
+  path="/docs/use/"
+  doc="use"
+  lede="Chapter 03"
+>
+  <h1>Use a component</h1>
+
+  <p class="lede">
+    Placing a component is one click. Filling it in happens in the sidebar, not in a modal, and the canvas
+    shows the real output while you type.
+  </p>
+
+  <h2>Place it</h2>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <strong>Open the page</strong> in the block editor and press the <code>+</code> button — top left,
+        or the one that appears when you hover between two blocks.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Find the category.</strong> <em>PhoenixSEO Components</em> is the first category in the
+        inserter, above WordPress's own. It holds one block per component type.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Pick one.</strong> The block appears at the cursor, already rendering — the editor runs the
+        same <code>render.php</code> the frontend runs, so what you see is the component, not a preview
+        image of it.
+      </div>
+    </li>
+  </ol>
+
+  <figure class="shot">
+    <img
+      src="/docs/use-inserter.webp"
+      width="450"
+      height="890"
+      alt="The block inserter with the category PhoenixSEO Components, listing FAQ, Hero, Feature grid, Pricing, Key figures, Record, Movie and Series."
+    />
+    <figcaption>
+      The inserter. A component that ships with the plugin is listed here as soon as the plugin is active;
+      one you add yourself appears after a reload.
+    </figcaption>
+  </figure>
+
+  <h2>Fill it in</h2>
+
+  <p>
+    Select the block. The right sidebar switches to the <em>Block</em> tab and lists the component's
+    fields, in the order the definition gives them. A field marked with an asterisk is required — the
+    definition says so, and the plugin does not invent a second rule on top.
+  </p>
+
+  <figure class="shot">
+    <img
+      src="/docs/use-fields.webp"
+      width="1090"
+      height="930"
+      alt="A Hero component selected on the canvas, with its fields Heading, Subline, Link text and Target shown in the Block tab of the sidebar."
+    />
+    <figcaption>
+      The fields of <code>hero</code>: heading, subline, and a call to action. Nothing else is exposed,
+      because nothing else is in the definition.
+    </figcaption>
+  </figure>
+
+  <p>
+    Long fields — a repeater's rows, for instance — scroll inside the sidebar rather than growing the page.
+    Text is saved with the page, so <em>Publish</em> or <em>Update</em> is the last step, as usual.
+  </p>
+
+  <h2>Several instances of one component</h2>
+
+  <p>
+    A page can hold any number of instances of the same type; each carries its own values. Two ways to get
+    a second one:
+  </p>
+
+  <ul>
+    <li>
+      <strong>Add it again</strong> through the inserter. It starts with the component's defaults.
+    </li>
+    <li>
+      <strong>Duplicate the instance</strong>: the block toolbar's <em>Options</em> menu (⋮) →
+      <em>Duplicate</em>, or <code>Ctrl</code>+<code>Shift</code>+<code>D</code>. The copy keeps every value
+      of the original, which is what you want when the second one differs in two words.
+    </li>
+  </ul>
+
+  <p>
+    Instances do not collide: each one lives in the page document under its own id, and the markup is
+    rendered per instance. Reordering happens by dragging, or in the list view.
+  </p>
+
+  <h2>Duplicate the component, not the instance</h2>
+
+  <p>
+    An instance copy changes one page. A type copy changes what every page can place — use it when you want
+    a variant that behaves differently, and want to keep the shipped original intact.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <strong>Open <em>Page Builder</em></strong> and find the component's row.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Press <em>Duplicate</em></strong> under the row's actions. A field appears for the new type —
+        lowercase, digits, hyphens. It has to differ from the original, and it becomes the folder name.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Press <em>Create.</em></strong> The copy is written to
+        <code>wp-content/sdc-components/&lt;new-type&gt;/</code> and is editable there. The original stays
+        where it was.
+      </div>
+    </li>
+  </ol>
+
+  <figure class="shot">
+    <img
+      src="/docs/use-duplicate.webp"
+      width="1239"
+      height="266"
+      alt="The FAQ row in the component catalog with the Duplicate panel open, a New Type field filled with faq-compact and a Create button."
+    />
+    <figcaption>
+      Duplicating <code>faq</code> — a plugin component, therefore read-only — into a new type you own.
+    </figcaption>
+  </figure>
+
+  <p class="note">
+    <strong>Why a new type and not just an edit</strong>
+    A page stores the type it placed. Renaming the type would orphan every instance of it, so duplication
+    asks for a name and leaves the original alone. Existing pages keep using the original until you swap the
+    block.
+  </p>
+
+  <h2>Remove</h2>
+
+  <p>
+    Deleting a block from a page removes it there and nowhere else. Deleting a <em>component</em> — in
+    <em>Page Builder</em>, only for site components — removes the type for the whole site. The plugin counts
+    the instances first and refuses unless you tick <em>Delete even if in use</em>; pages that still
+    reference it then render nothing in its place, and <code>wp sdc-pb repair</code> will report them.
+  </p>
+
+  <h2>Next</h2>
+
+  <p>
+    Ten components may be enough. When they are not, <a href="/docs/build/">chapter 04</a> writes one.
+  </p>
+</Docs>

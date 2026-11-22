@@ -1,0 +1,210 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import Code from '../../components/Code.astro';
+
+const generic = `<?php
+// No render.php: the plugin prints every field, escaped and labelled.
+// Explicit is still better than implicit when the markup matters.
+sdcpb_fields();`;
+---
+
+<Docs
+  title="Reference — PhoenixSEO Page Builder docs"
+  description="Lookup for the PhoenixSEO Page Builder: field types, every template helper, the WP-CLI commands, the filters, and what to check when a component renders nothing."
+  path="/docs/reference/"
+  doc="reference"
+  lede="Chapter 05"
+>
+  <h1>Reference</h1>
+
+  <p class="lede">
+    The lookup you keep open in a second tab. Field types, helpers, commands — and the checklist for when a
+    component does not show up.
+  </p>
+
+  <h2 id="field-types">Field types</h2>
+
+  <p>
+    Seventeen types, in four groups. In <em>New Component</em> they appear in this order; in
+    <code>definition.json</code> the key is the ACF type name, which is the left column.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Name in the editor</th><th>Use for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="3"><strong>Text</strong></td></tr>
+      <tr><td><code>text</code></td><td>Text Line</td><td>One line — headings, names, labels.</td></tr>
+      <tr><td><code>textarea</code></td><td>Multiline Text</td><td>A few lines without formatting.</td></tr>
+      <tr><td><code>wysiwyg</code></td><td>Formatted Text</td><td>Rich text, stored as HTML.</td></tr>
+      <tr><td><code>number</code></td><td>Number</td><td>Values with min, max and step.</td></tr>
+      <tr><td><code>range</code></td><td>Slider</td><td>A number with a visible range.</td></tr>
+      <tr><td><code>email</code></td><td>Email Address</td><td>Addresses, validated by the browser.</td></tr>
+      <tr><td><code>url</code></td><td>Link URL</td><td>A bare URL, no link text.</td></tr>
+      <tr><td colspan="3"><strong>Choice</strong></td></tr>
+      <tr><td><code>select</code></td><td>Select</td><td>One or more of a fixed list.</td></tr>
+      <tr><td><code>checkbox</code></td><td>Checkboxes</td><td>Any number of a fixed list.</td></tr>
+      <tr><td><code>radio</code></td><td>Radio Buttons</td><td>Exactly one of a few, all visible.</td></tr>
+      <tr><td><code>button_group</code></td><td>Button Group</td><td>One of a few, as buttons — for a look, a size, a tone.</td></tr>
+      <tr><td><code>true_false</code></td><td>Yes/No</td><td>A switch. Store the difference, not the default.</td></tr>
+      <tr><td colspan="3"><strong>Media</strong></td></tr>
+      <tr><td><code>image</code></td><td>Image</td><td>A picture from the media library. <code>return_format</code>: <code>array</code>, <code>url</code> or <code>id</code>.</td></tr>
+      <tr><td><code>file</code></td><td>File</td><td>Any upload. Same three return formats.</td></tr>
+      <tr><td><code>link</code></td><td>Link</td><td>URL plus link text, optionally a target.</td></tr>
+      <tr><td colspan="3"><strong>Structure</strong></td></tr>
+      <tr><td><code>repeater</code></td><td>Repeater</td><td>Rows of sub-fields — tracks, tiers, questions.</td></tr>
+      <tr><td><code>group</code></td><td>Group</td><td>A fixed set of sub-fields as one unit.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    <strong>Choosing between select and repeater</strong>
+    A fixed list of options is a <code>select</code> with <code>choices</code>. A list whose length the
+    editor decides is a <code>repeater</code>. Reaching for a repeater where a select would do pulls the
+    layout decision into the content, where it cannot be changed for all pages at once.
+  </p>
+
+  <h2 id="helpers">Helpers in render.php</h2>
+
+  <p>
+    Fourteen functions, available inside every <code>render.php</code>. All of them print; all of them
+    escape. The optional <code>$context</code> argument is a repeater row — pass it when you are inside
+    <code>sdcpb_each()</code>.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Function</th><th>Prints</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>sdcpb_text( $key )</code></td><td>The value as escaped text.</td></tr>
+      <tr><td><code>sdcpb_html( $key )</code></td><td>The value as HTML, filtered through <code>wp_kses_post</code>.</td></tr>
+      <tr><td><code>sdcpb_attr( $key )</code></td><td>The value as an escaped attribute value.</td></tr>
+      <tr><td><code>sdcpb_url( $key )</code></td><td>The value as an escaped URL.</td></tr>
+      <tr><td><code>sdcpb_has( $key )</code></td><td>Nothing — returns true when the field has a value. <code>'0'</code> counts as a value.</td></tr>
+      <tr><td><code>sdcpb_value( $key, $context, $fallback )</code></td><td>Nothing — returns the raw value, unescaped. For arithmetic and comparisons.</td></tr>
+      <tr><td><code>sdcpb_link( $key, $class, $text )</code></td><td>A whole <code>&lt;a&gt;</code> from a link field.</td></tr>
+      <tr><td><code>sdcpb_file( $key, $class )</code></td><td>A whole <code>&lt;a&gt;</code> from a file field.</td></tr>
+      <tr><td><code>sdcpb_image( $key, $size, $attr )</code></td><td>An <code>&lt;img&gt;</code> with alt text, width and height.</td></tr>
+      <tr><td><code>sdcpb_image_url( $key, $size )</code></td><td>Just the URL — for <code>srcset</code>, JSON-LD, a <code>&lt;picture&gt;</code> source.</td></tr>
+      <tr><td><code>sdcpb_image_style( $key, $size, $property )</code></td><td>A <code>style</code> attribute with the image as a custom property, default <code>--sdc-image</code>.</td></tr>
+      <tr><td><code>sdcpb_each( $key, $callback )</code></td><td>Nothing — loops the rows of a repeater; the callback gets the row and its index.</td></tr>
+      <tr><td><code>sdcpb_fields()</code></td><td>The generic markup for all fields of the current component.</td></tr>
+      <tr><td><code>sdcpb_class( ...$classes )</code></td><td>A <code>class</code> attribute from the parts that are not empty.</td></tr>
+    </tbody>
+  </table>
+
+  <Code code={generic} label="the generic output, called by hand" />
+
+  <h3>The row argument</h3>
+
+  <p>
+    Inside <code>sdcpb_each()</code> every helper still reads the component unless you hand it the row.
+    That is the one asymmetry worth memorising: <code>sdcpb_text( 'q', $row )</code>, not
+    <code>sdcpb_text( 'q' )</code>. A helper that guessed which array was meant would be wrong in one of
+    the two contexts half the time.
+  </p>
+
+  <h2 id="cli">WP-CLI</h2>
+
+  <table>
+    <thead>
+      <tr><th>Command</th><th>Does</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>wp sdc-pb repair</code></td>
+        <td>Reports pages that reference a component their document no longer holds. Read-only.</td>
+      </tr>
+      <tr>
+        <td><code>wp sdc-pb repair --apply</code></td>
+        <td>Appends what is missing to those pages. Adds and never deletes; nothing is reordered.</td>
+      </tr>
+      <tr>
+        <td><code>wp sdc-pb repair --post=98</code></td>
+        <td>One page only. Combine with <code>--apply</code> to write.</td>
+      </tr>
+      <tr>
+        <td><code>wp sdc-pb rename --dry-run</code></td>
+        <td>Shows which stored data would move to the current key prefix. Writes nothing.</td>
+      </tr>
+      <tr>
+        <td><code>wp sdc-pb rename</code></td>
+        <td>Moves stored data to the current prefix — for a site that ran an older key scheme.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="filters">Filters</h2>
+
+  <table>
+    <thead>
+      <tr><th>Filter</th><th>Default</th><th>Changes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>sdcpb_component_dirs</code></td>
+        <td>child theme, parent theme, <code>wp-content/sdc-components</code></td>
+        <td>Which directories are scanned for components. A plugin can supply its own.</td>
+      </tr>
+      <tr>
+        <td><code>sdcpb_inline_component_styles</code></td>
+        <td><code>true</code></td>
+        <td>Whether <code>component.css</code> is inlined into the head or left to your asset chain.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="troubleshooting">When it does not work</h2>
+
+  <p>In the order worth checking:</p>
+
+  <ul>
+    <li>
+      <strong>The category is missing from the inserter.</strong> ACF or SCF is not active, or the plugin
+      is not. The blocks exist only while both are.
+    </li>
+    <li>
+      <strong>The component is in the catalog but not in the inserter.</strong> Its
+      <code>definition.json</code> is not registered with ACF — usually a <code>key</code> that is not
+      <code>group_sdcpb_component_&lt;type&gt;</code>, or a <code>location</code> rule that was edited.
+    </li>
+    <li>
+      <strong>The block is placed but renders nothing.</strong> Either a <code>render.php</code> returns
+      early (every example view starts with <code>if ( ! sdcpb_has( … ) ) return;</code>), or the page was
+      written by an older version and lost the component. <code>wp sdc-pb repair</code> tells the two apart:
+      it lists pages whose document lacks a type the content expects.
+    </li>
+    <li>
+      <strong>Only unstyled output.</strong> The component has no <code>component.css</code>, or the
+      stylesheet filter is off and your theme does not enqueue the file.
+    </li>
+    <li>
+      <strong>Changes to the component do not appear.</strong> You are editing a copy that loses: check the
+      <em>Storage</em> column. A definition in the plugin directory is overridden by the same type in the
+      theme or in <code>wp-content/sdc-components/</code>.
+    </li>
+    <li>
+      <strong>An underscore in the type.</strong> Not allowed: <code>sdcpb/feature_grid</code> is not a valid
+      block name. Rename the directory and the group key with a hyphen.
+    </li>
+  </ul>
+
+  <h2 id="numbers">What the format costs</h2>
+
+  <p>
+    A page stores one meta entry with its document. Thirty components come to about 12.5 kB and save in
+    four queries; the same content in a field-per-value scheme is close to two thousand rows and several
+    hundred queries. Because the document travels as JSON over REST instead of as a form,
+    <code>max_input_vars</code> does not silently truncate it — the reason for the separate save path.
+  </p>
+
+  <h2>Where to go from here</h2>
+
+  <ul>
+    <li><a href="/components/">The library</a> — ten components with their source and a ZIP each.</li>
+    <li><a href="/format/">The format</a> — why a component is a directory, and what SDC means.</li>
+    <li><a href="https://github.com/phoenixseo/sdc-page-builder">The plugin source</a> — issues and pull requests.</li>
+  </ul>
+</Docs>

@@ -1,0 +1,235 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import Code from '../../components/Code.astro';
+
+const definition = `{
+  "key": "group_sdcpb_component_note",
+  "title": "Note",
+  "sdcpb_description": "A short aside with a label.",
+  "sdcpb_icon": "info-outline",
+  "sdcpb_version": 1,
+  "fields": [
+    {
+      "key": "field_sdc_note_label",
+      "label": "Label",
+      "name": "label",
+      "type": "text",
+      "required": 1
+    },
+    {
+      "key": "field_sdc_note_text",
+      "label": "Text",
+      "name": "text",
+      "type": "textarea",
+      "required": 1,
+      "rows": 3
+    }
+  ],
+  "location": [
+    [ { "param": "sdcpb_component", "operator": "==", "value": "1" } ]
+  ],
+  "menu_order": 0
+}`;
+
+const view = `<?php
+defined( 'ABSPATH' ) || exit;
+
+if ( ! sdcpb_has( 'text' ) ) {
+    return;
+}
+?>
+<aside class="sdc-note">
+    <?php if ( sdcpb_has( 'label' ) ) : ?>
+        <p class="sdc-note__label"><?php sdcpb_text( 'label' ); ?></p>
+    <?php endif; ?>
+    <div class="sdc-note__text"><?php sdcpb_html( 'text' ); ?></div>
+</aside>`;
+
+const css = `.sdc-note {
+    --sdc-note-rule: color-mix(in srgb, currentColor 18%, transparent);
+
+    border-inline-start: 2px solid var(--sdc-note-rule);
+    padding-inline-start: 1rem;
+    margin-block: 1.5rem;
+}`;
+
+const structure = `wp-content/sdc-components/note/
+├── definition.json     required — fields, title, icon
+├── render.php          optional — markup
+└── component.css       optional — styles`;
+---
+
+<Docs
+  title="Build a component — PhoenixSEO Page Builder docs"
+  description="How to write your own component: the type name, the definition.json, the render.php and its helpers, and the stylesheet."
+  path="/docs/build/"
+  doc="build"
+  lede="Chapter 04"
+>
+  <h1>Build a component</h1>
+
+  <p class="lede">
+    A component is a directory with a JSON file in it. Everything else — markup, styles, editor fields,
+    the block in the inserter — follows from that file.
+  </p>
+
+  <h2>Two ways in</h2>
+
+  <p>
+    <em>Page Builder → New Component</em> builds a definition through a form and writes the directory for
+    you. A text editor and an FTP client do the same thing without the plugin's help — which is the point
+    of the format, and the reason both ways are documented here.
+  </p>
+
+  <figure class="shot">
+    <img
+      src="/docs/build-form.webp"
+      width="1275"
+      height="980"
+      alt="The New Component form: Type, Name, Description, Icon, a Fields builder with a type dropdown and an Add Field button, and a View panel for render.php."
+    />
+    <figcaption>
+      The form writes the same three files you would write by hand. <em>Fields</em> is a builder — pick a
+      type, <em>Add Field</em>, fill in the settings — with <em>Edit JSON Directly</em> underneath for
+      pasting a definition from elsewhere.
+    </figcaption>
+  </figure>
+
+  <h2>The type name</h2>
+
+  <p>
+    One string decides the folder, the block name and the field group key. Lowercase letters, digits and
+    hyphens:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>Folder</th><th>Block</th><th>Group key</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>note</code></td>
+        <td><code>sdc-components/note/</code></td>
+        <td><code>sdcpb/note</code></td>
+        <td><code>group_sdcpb_component_note</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    No underscores: WordPress rejects <code>sdcpb/my_note</code> as a block name, and a component whose
+    block cannot be registered is a component nobody can place. A hyphen works in all three places —
+    <code>feature-grid</code>, <code>group_sdcpb_component_feature-grid</code>,
+    <code>sdcpb/feature-grid</code>.
+  </p>
+
+  <h2>The directory</h2>
+
+  <Code code={structure} label="directory" />
+
+  <p>
+    <code>definition.json</code> is the only required file. Without <code>render.php</code> the plugin
+    prints the fields generically: each one as a labelled block, lists as rows. For an FAQ, an address or a
+    table that is often enough, and it is never wrong — the generic output is escaped and labelled.
+  </p>
+
+  <p>
+    Write markup when the element carries a meaning fields cannot express
+    (<code>&lt;blockquote&gt;</code>, <code>&lt;dl&gt;</code>, <code>&lt;figure&gt;</code>), when a value is
+    a key that has to be translated first, when the number of rows decides the layout, or when a rule spans
+    several rows.
+  </p>
+
+  <h2>definition.json</h2>
+
+  <p>
+    An ACF field group, in JSON, plus three <code>sdcpb_</code> keys the plugin adds: description, icon and
+    version. The <code>location</code> rule stays as it is — it is what lets ACF attach the fields to the
+    component.
+  </p>
+
+  <Code code={definition} label="definition.json" />
+
+  <p>
+    <code>key</code> must be <code>group_sdcpb_component_&lt;type&gt;</code>. <code>title</code> is the name
+    in the inserter, <code>sdcpb_description</code> the line under it, <code>sdcpb_icon</code> a Dashicon
+    name. <code>sdcpb_version</code> is the component's own version — bump it when the fields change.
+  </p>
+
+  <p>
+    Field types are ACF's, narrowed to the ones the plugin's editor offers. The full list is in
+    <a href="/docs/reference/#field-types">the reference</a>.
+  </p>
+
+  <h2>render.php</h2>
+
+  <p>
+    A view receives three variables and prints its own markup, including the wrapping element. It is read
+    in the theme's context, so theme functions are available; it is not a template part and gets no
+    <code>$args</code>.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Variable</th><th>Contents</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>$type</code></td><td>The component type, a string.</td></tr>
+      <tr><td><code>$data</code></td><td>The raw stored values, keyed by field name.</td></tr>
+      <tr><td><code>$component</code></td><td>The entry from the page document: id, type, and a few bookkeeping keys.</td></tr>
+    </tbody>
+  </table>
+
+  <Code code={view} label="render.php" />
+
+  <p>
+    Every helper prints and escapes. <code>sdcpb_text()</code> is text, <code>sdcpb_html()</code> runs
+    <code>wp_kses_post</code>, <code>sdcpb_attr()</code> and <code>sdcpb_url()</code> are for attribute
+    context. <code>sdcpb_has()</code> answers whether a field holds a value — where <code>'0'</code> counts
+    as a value, because a price of zero is a price.
+  </p>
+
+  <p>
+    Inside <code>sdcpb_each()</code> the helpers read the component, not the row: pass the row as the last
+    argument — <code>sdcpb_text( 'label', $row )</code>. That asymmetry is deliberate; a helper that guessed
+    which array was meant would be wrong half the time.
+  </p>
+
+  <h2>component.css</h2>
+
+  <p>
+    Styles for the component, loaded only when the component is on the page. They are inlined into the
+    <code>&lt;head&gt;</code> rather than linked, so one component costs no extra request — set the filter
+    <code>sdcpb_inline_component_styles</code> to <code>false</code> if you would rather have separate files.
+  </p>
+
+  <Code code={css} label="component.css" />
+
+  <p>
+    The shipped components set custom properties for anything a theme might want to change, so overriding
+    one is a single line in your stylesheet rather than a copy of the file.
+  </p>
+
+  <h2>Put it in place</h2>
+
+  <p>
+    Copy the directory to <code>wp-content/sdc-components/&lt;type&gt;/</code> and reload any admin page. The
+    component appears in <em>Page Builder</em>, in the inserter, and — if it has a <code>render.php</code> —
+    renders with it. No cache to clear: definitions are read from disk per request.
+  </p>
+
+  <p>
+    If you would rather not touch the server, <em>Page Builder → Import Component</em> takes a single
+    <code>definition.json</code>; the group key inside it determines the type, and existing types are never
+    overwritten. <em>Export</em> on any row produces exactly that file, which is how a component travels
+    between sites without the markup — remember that <code>render.php</code> is a separate file and does not
+    travel with it.
+  </p>
+
+  <h2>Next</h2>
+
+  <p>
+    <a href="/docs/reference/">Chapter 05</a> is the lookup table: field types, every helper, the CLI, and
+    what to check when a component renders nothing.
+  </p>
+</Docs>

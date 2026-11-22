@@ -1,0 +1,139 @@
+---
+import Docs from '../../layouts/Docs.astro';
+---
+
+<Docs
+  title="Docs — PhoenixSEO Page Builder"
+  description="The manual for the PhoenixSEO Page Builder: install the plugin, put a component on a page, write your own component, and look up the field types and helpers."
+  path="/docs/"
+  doc="index"
+  lede="Manual"
+>
+  <h1>Components, and how to use them</h1>
+
+  <p class="lede">
+    This site holds two things. A library of ready-made components you can put on a page today, and the
+    manual for the plugin that runs them. Five chapters, one hour, and you can write your own.
+  </p>
+
+  <h2>What the plugin does</h2>
+
+  <p>
+    A component is a directory: a field definition, a piece of markup, optionally a stylesheet. A page
+    stores only <em>which</em> components appear in which order and which values their fields hold — none
+    of how they look.
+  </p>
+
+  <p>
+    That one decision carries the rest. Change a component's <code>render.php</code> and every instance on
+    every page changes with it. No migration, no search-and-replace, no "this only affects new pages".
+  </p>
+
+  <p>
+    Fields come from <a href="https://wordpress.org/plugins/secure-custom-fields/">Secure Custom Fields</a>
+    or Advanced Custom Fields. Storage and rendering are the plugin's own. Either host works; you need one
+    of them active.
+  </p>
+
+  <h2>In five minutes</h2>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <strong>Install the plugin.</strong> Upload the ZIP under <em>Plugins → Add New → Upload Plugin</em>
+        and activate it. A new menu entry <em>Page Builder</em> appears in the sidebar.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Open a page in the block editor</strong> and press <code>+</code>. The category
+        <em>PhoenixSEO Components</em> is the first one in the inserter.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Place a component</strong>, for example <em>FAQ</em>. The block appears with its fields
+        already filled from the example content, if the component ships any.
+      </div>
+    </li>
+    <li>
+      <div>
+        <strong>Select the block</strong> and switch the sidebar to its <em>Block</em> tab. The fields are
+        there, not in a modal. Fill them in, press <em>Publish</em>.
+      </div>
+    </li>
+  </ol>
+
+  <p>
+    That is the whole day-to-day workflow. Everything below is either a detail of it or a way out of it.
+  </p>
+
+  <h2>Where components live</h2>
+
+  <p>
+    Four directories are scanned, in this order. The first match wins, so a component in the theme
+    overrides one of the same type that ships with the plugin — and the plugin's own copy survives every
+    update untouched.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Directory</th>
+        <th>Belongs to</th>
+        <th>Editable in wp-admin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>wp-content/themes/&lt;child&gt;/sdc-components/</code></td>
+        <td>the theme, child first</td>
+        <td>no — read-only here</td>
+      </tr>
+      <tr>
+        <td><code>wp-content/themes/&lt;parent&gt;/sdc-components/</code></td>
+        <td>the theme</td>
+        <td>no — read-only here</td>
+      </tr>
+      <tr>
+        <td><code>wp-content/sdc-components/</code></td>
+        <td>the site</td>
+        <td>yes</td>
+      </tr>
+      <tr>
+        <td><code>wp-content/plugins/phoenixseo-page-builder/schemas/</code></td>
+        <td>the plugin</td>
+        <td>no — replaced on update</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    <strong>The one thing to remember</strong>
+    A component that ships with the plugin or the theme cannot be edited in wp-admin, on purpose: the next
+    deploy or update would overwrite the change without a word. Duplicate it into
+    <code>wp-content/sdc-components/</code> and edit the copy.
+  </p>
+
+  <h2>The library</h2>
+
+  <p>
+    Ten components ship with the plugin, and every one of them is on this site with its rendered output,
+    its fields and a ZIP of its directory. They are a course through the format: <em>hero</em> is a
+    definition and nothing else, <em>pricing-table</em> nests a repeater inside a repeater,
+    <em>vinyl</em> computes what nobody should type.
+  </p>
+
+  <p>
+    <a class="button button--quiet" href="/components/">Browse the components</a>
+  </p>
+
+  <h2>The chapters</h2>
+
+  <ul>
+    <li><a href="/docs/install/">Install</a> — requirements, activation, and what the plugin's screen shows.</li>
+    <li><a href="/docs/use/">Use a component</a> — insert, fill, duplicate an instance, duplicate a type.</li>
+    <li><a href="/docs/build/">Build a component</a> — from the form or from a directory, with markup and styles.</li>
+    <li><a href="/docs/reference/">Reference</a> — field types, helpers, CLI, troubleshooting.</li>
+  </ul>
+</Docs>
