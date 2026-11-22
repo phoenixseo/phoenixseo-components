@@ -27,10 +27,10 @@ jobs:
 
     steps:
       - name: 🚚 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -84,16 +84,21 @@ jobs:
           # The files on disk are the ground truth: the CDN in front of the
           # subdomain answers non-browser requests with 403, so an HTTP check
           # alone cannot tell a broken deploy from a bot filter.
-          out=$(ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$SSH_PORT" "$SSH_USER@$HOST" \
-            "grep -c 'PhoenixSEO Components' '$TARGET'index.html; \
-             test -f '$TARGET'components/vinyl/index.html && echo vinyl-ok; \
-             test -f '$TARGET'download/vinyl.zip && echo zip-ok; \
-             test -d '$TARGET'_astro && echo assets-ok")
+          # Every remote probe prints its own marker; a missing marker fails the
+          # step. `|| true` keeps ssh's exit code from aborting the script under
+          # `bash -e` before the markers are looked at.
+          out=$(ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$SSH_PORT" "$SSH_USER@$HOST" "
+            T='$TARGET'
+            test -f \"\${T}index.html\" && echo index-ok
+            grep -q 'PhoenixSEO Components' \"\${T}index.html\" && echo title-ok
+            test -f \"\${T}components/vinyl/index.html\" && echo vinyl-ok
+            test -f \"\${T}download/vinyl.zip\" && echo zip-ok
+            test -d \"\${T}_astro\" && echo assets-ok
+          " || true)
           echo "$out"
-          grep -q 'PhoenixSEO Components' <<<"$out" || { echo "FAIL: index.html not found or wrong"; exit 1; }
-          grep -q 'vinyl-ok' <<<"$out" || { echo "FAIL: component page missing"; exit 1; }
-          grep -q 'zip-ok' <<<"$out" || { echo "FAIL: download missing"; exit 1; }
-          grep -q 'assets-ok' <<<"$out" || { echo "FAIL: assets folder missing"; exit 1; }
+          for marker in index-ok title-ok vinyl-ok zip-ok assets-ok; do
+            grep -qx "$marker" <<<"$out" || { echo "FAIL: $marker"; exit 1; }
+          done
 
       - name: 🌐 Probe the live URL
         run: |
