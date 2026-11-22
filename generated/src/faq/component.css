@@ -1,0 +1,14 @@
+/* Probe: erreicht dieses Stylesheet den Editor-Iframe? */
+.sdc-component--faq {
+	border: 3px solid #0f766e;
+	background: #ecfdf5;
+	padding: 14px;
+	border-radius: 10px;
+}
+
+.sdc-component--faq .sdc-field--heading p {
+	border-left: 8px solid #c2410c;
+	padding-left: 12px;
+	color: #7c2d12;
+	font-weight: 700;
+}

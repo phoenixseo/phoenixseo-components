@@ -1,0 +1,47 @@
+{
+  "note": "A repeater inside a repeater, plus exactly one highlighted tier — a rule that spans the rows, which is why it needs its own markup.",
+  "capabilities": ["repeater", "nested-repeater", "custom-markup"],
+  "data": {
+    "heading": "Plans",
+    "intro": "An example with three columns. The prices are made up.",
+    "plans": [
+      {
+        "name": "Solo",
+        "price": "$9",
+        "period": "per month",
+        "description": "For one site and one person.",
+        "features": [{ "text": "One website" }, { "text": "All components" }, { "text": "Email support" }],
+        "link": { "title": "Choose", "url": "#", "target": "" },
+        "highlight": false
+      },
+      {
+        "name": "Team",
+        "price": "$29",
+        "period": "per month",
+        "description": "For editorial teams working on several pages.",
+        "features": [
+          { "text": "Five websites" },
+          { "text": "All components" },
+          { "text": "Your own components" },
+          { "text": "Same-day support" }
+        ],
+        "link": { "title": "Choose", "url": "#", "target": "" },
+        "highlight": true
+      },
+      {
+        "name": "Agency",
+        "price": "$99",
+        "period": "per month",
+        "description": "For maintaining client sites.",
+        "features": [
+          { "text": "Unlimited websites" },
+          { "text": "White label" },
+          { "text": "Your own components" },
+          { "text": "Priority support" }
+        ],
+        "link": { "title": "Choose", "url": "#", "target": "" },
+        "highlight": false
+      }
+    ]
+  }
+}

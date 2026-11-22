@@ -1,0 +1,108 @@
+name: 🚀 Deploy components site to Hostinger
+
+# Push to main -> build -> rsync into the subdomain directory.
+# The catalog itself (generated/) is produced locally inside WordPress by
+# `npm run export` and committed; this workflow only builds and ships it.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-components
+  cancel-in-progress: true
+
+env:
+  HOST: 46.202.157.162
+  SSH_PORT: 65002
+  SSH_USER: u206548916
+  TARGET: /home/u206548916/domains/phoenixseo.de/public_html/subdomain/components.phoenixseo.de/
+  SITE_URL: https://components.phoenixseo.de
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Checkout
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Astro project
+        run: npm run build
+
+      - name: 🔎 Check the build is complete
+        run: |
+          # A build that silently drops pages would upload a smaller site and
+          # still exit green. Count pages and required assets instead.
+          pages=$(find dist -name '*.html' | wc -l)
+          echo "html pages: $pages"
+          test "$pages" -ge 13 || { echo "FAIL: expected at least 13 pages"; exit 1; }
+          test -f dist/catalog.json || { echo "FAIL: catalog.json missing"; exit 1; }
+          test -f dist/components/vinyl/index.html || { echo "FAIL: vinyl page missing"; exit 1; }
+          zips=$(find dist/download -name '*.zip' | wc -l)
+          echo "component zips: $zips"
+          test "$zips" -ge 10 || { echo "FAIL: expected at least 10 zips"; exit 1; }
+
+      - name: 🔑 Install deploy key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes \
+            -o ConnectTimeout=15 -p "$SSH_PORT" "$SSH_USER@$HOST" "echo SSH OK"
+
+      - name: 🧹 Clean the subdomain directory
+        run: |
+          # Only inside the subdomain folder. The parent holds phoenixseo.de and
+          # must never be touched from here.
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$SSH_PORT" "$SSH_USER@$HOST" \
+            "find '$TARGET' -mindepth 1 -maxdepth 1 \
+              ! -name 'default.php*' ! -name '.htaccess' -exec rm -rf {} +"
+
+      - name: 📂 Upload build
+        run: |
+          rsync -az --delete \
+            --exclude 'default.php*' \
+            --exclude '.htaccess' \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p $SSH_PORT" \
+            dist/ "$SSH_USER@$HOST:$TARGET"
+
+      - name: ✅ Verify on the server
+        run: |
+          # The files on disk are the ground truth: the CDN in front of the
+          # subdomain answers non-browser requests with 403, so an HTTP check
+          # alone cannot tell a broken deploy from a bot filter.
+          out=$(ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -p "$SSH_PORT" "$SSH_USER@$HOST" \
+            "grep -c 'PhoenixSEO Components' '$TARGET'index.html; \
+             test -f '$TARGET'components/vinyl/index.html && echo vinyl-ok; \
+             test -f '$TARGET'download/vinyl.zip && echo zip-ok; \
+             test -d '$TARGET'_astro && echo assets-ok")
+          echo "$out"
+          grep -q 'PhoenixSEO Components' <<<"$out" || { echo "FAIL: index.html not found or wrong"; exit 1; }
+          grep -q 'vinyl-ok' <<<"$out" || { echo "FAIL: component page missing"; exit 1; }
+          grep -q 'zip-ok' <<<"$out" || { echo "FAIL: download missing"; exit 1; }
+          grep -q 'assets-ok' <<<"$out" || { echo "FAIL: assets folder missing"; exit 1; }
+
+      - name: 🌐 Probe the live URL
+        run: |
+          # Tolerate 403 (Hostinger bot filter, hcdn). Fail on 404/5xx.
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 \
+            -A 'Mozilla/5.0 (compatible; components-deploy-check)' \
+            "$SITE_URL/" || echo 000)
+          echo "GET $SITE_URL/ -> $code"
+          case "$code" in
+            200|403) exit 0 ;;
+            *) echo "FAIL: unexpected status $code"; exit 1 ;;
+          esac

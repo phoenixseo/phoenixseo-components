@@ -1,0 +1,875 @@
+{
+    "generated": "2026-11-21T18:03:19+00:00",
+    "plugin": {
+        "name": "PhoenixSEO Page Builder",
+        "version": "0.3.1",
+        "repo": "https://github.com/phoenixseo/sdc-page-builder",
+        "license": "GPL-2.0-or-later"
+    },
+    "components": [
+        {
+            "type": "cta-band",
+            "title": "Action band",
+            "description": "A coloured band with a statement and up to two calls to action.",
+            "icon": "megaphone",
+            "version": 1,
+            "note": "One band across the full width, two links and three tones from a select field. The second link disappears when it is empty.",
+            "capabilities": [
+                "custom-markup",
+                "theming"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 1,
+            "fields": [
+                {
+                    "name": "eyebrow",
+                    "label": "Eyebrow",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. A small line above the statement."
+                },
+                {
+                    "name": "heading",
+                    "label": "Statement",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": "One sentence that suggests an action."
+                },
+                {
+                    "name": "text",
+                    "label": "Text",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Two sentences at most."
+                },
+                {
+                    "name": "primary",
+                    "label": "First link",
+                    "type": "link",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "The more important of the two paths."
+                },
+                {
+                    "name": "secondary",
+                    "label": "Second link",
+                    "type": "link",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Rendered as a quiet text link."
+                },
+                {
+                    "name": "tone",
+                    "label": "Tone",
+                    "type": "select",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Three variants the theme's stylesheet can override."
+                }
+            ],
+            "size": 633
+        },
+        {
+            "type": "faq",
+            "title": "FAQ",
+            "description": "A question-and-answer list with an optional heading.",
+            "icon": "editor-help",
+            "version": 1,
+            "note": "A repeater with two subfields, printed by the generic output: an accordion of details elements that works without JavaScript.",
+            "capabilities": [
+                "definition-only",
+                "repeater",
+                "semantics"
+            ],
+            "files": [
+                "definition.json",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Leave empty if the component should start without a title."
+                },
+                {
+                    "name": "items",
+                    "label": "Items",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One line per question."
+                },
+                {
+                    "name": "q",
+                    "label": "Question",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "a",
+                    "label": "Answer",
+                    "type": "textarea",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                }
+            ],
+            "size": 1721
+        },
+        {
+            "type": "feature-grid",
+            "title": "Feature grid",
+            "description": "Features in a grid: icon, title, text and an optional link per card.",
+            "icon": "grid-view",
+            "version": 1,
+            "note": "A select field used as an icon choice: the editor picks from a list, so a typo cannot produce an icon that does not exist.",
+            "capabilities": [
+                "repeater",
+                "custom-markup",
+                "theming"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Leave empty if the grid should start without a title."
+                },
+                {
+                    "name": "intro",
+                    "label": "Intro",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. One or two sentences above the grid."
+                },
+                {
+                    "name": "items",
+                    "label": "Features",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One card per row. The order here is the order on the page."
+                },
+                {
+                    "name": "icon",
+                    "label": "Icon",
+                    "type": "select",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Rendered as a line icon, not as an image."
+                },
+                {
+                    "name": "title",
+                    "label": "Title",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "text",
+                    "label": "Text",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "link",
+                    "label": "Link",
+                    "type": "link",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. Makes the card title clickable."
+                }
+            ],
+            "size": 2205
+        },
+        {
+            "type": "hero",
+            "title": "Hero",
+            "description": "A page header with heading, subline and an optional call to action.",
+            "icon": "cover-image",
+            "version": 1,
+            "note": "The minimum: a definition and nothing else. The plugin prints the fields generically, which is enough for a heading, a paragraph and a button.",
+            "capabilities": [
+                "definition-only"
+            ],
+            "files": [
+                "definition.json"
+            ],
+            "depth": 1,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": "The main statement of the page."
+                },
+                {
+                    "name": "subline",
+                    "label": "Subline",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. One or two sentences that frame the heading."
+                },
+                {
+                    "name": "cta",
+                    "label": "Call to action",
+                    "type": "link",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Link text and target in one field."
+                }
+            ],
+            "size": 578
+        },
+        {
+            "type": "movie",
+            "title": "Movie",
+            "description": "A film with poster, the hard facts in a definition list, cast and synopsis.",
+            "icon": "format-video",
+            "version": 1,
+            "note": "Facts as a definition list, the rating as a meter element with bounds, the running time written from a number of minutes. Empty fields drop out instead of leaving blank rows.",
+            "capabilities": [
+                "repeater",
+                "computed",
+                "semantics",
+                "custom-markup"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "poster",
+                    "label": "Poster",
+                    "type": "image",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Portrait, at least 600 px tall. Without it, the text starts on the left."
+                },
+                {
+                    "name": "title",
+                    "label": "Title",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "original_title",
+                    "label": "Original title",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Only fill in if it differs from the original title."
+                },
+                {
+                    "name": "year",
+                    "label": "Release year",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "director",
+                    "label": "Director",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "genre",
+                    "label": "Genre",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Separate several with commas: drama, thriller."
+                },
+                {
+                    "name": "runtime",
+                    "label": "Runtime in minutes",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "The number only, 117 instead of 1:57. The view turns that into 1h 57m."
+                },
+                {
+                    "name": "rating",
+                    "label": "Rating",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "From 0 to 10, one decimal place: 8.4. Leave empty if there is none."
+                },
+                {
+                    "name": "cast",
+                    "label": "Cast",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "The order here is the order in the credits."
+                },
+                {
+                    "name": "actor",
+                    "label": "Name",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "role",
+                    "label": "Role",
+                    "type": "text",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. Sits after the name as \"as …\"."
+                },
+                {
+                    "name": "synopsis",
+                    "label": "Synopsis",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Three to five sentences. No spoilers."
+                },
+                {
+                    "name": "link",
+                    "label": "Link",
+                    "type": "link",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Trailer, streaming or cinema."
+                }
+            ],
+            "size": 2659
+        },
+        {
+            "type": "pricing-table",
+            "title": "Pricing",
+            "description": "Plan cards with a feature list and one highlighted plan.",
+            "icon": "money-alt",
+            "version": 1,
+            "note": "A repeater inside a repeater, plus exactly one highlighted tier — a rule that spans the rows, which is why it needs its own markup.",
+            "capabilities": [
+                "repeater",
+                "nested-repeater",
+                "custom-markup"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 3,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional."
+                },
+                {
+                    "name": "intro",
+                    "label": "Intro",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. For example a note on the term or net prices."
+                },
+                {
+                    "name": "plans",
+                    "label": "Plans",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One plan per row. The features are a list of their own within each row."
+                },
+                {
+                    "name": "name",
+                    "label": "Name",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "price",
+                    "label": "Price",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": "Number and currency, for example $89. No calculation, no formatting."
+                },
+                {
+                    "name": "period",
+                    "label": "Period",
+                    "type": "text",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. Sits small next to the price, for example / month."
+                },
+                {
+                    "name": "description",
+                    "label": "Description",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. One sentence on who the plan is for."
+                },
+                {
+                    "name": "features",
+                    "label": "Features",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "One feature per row."
+                },
+                {
+                    "name": "text",
+                    "label": "Feature",
+                    "type": "text",
+                    "required": true,
+                    "level": 3,
+                    "instructions": ""
+                },
+                {
+                    "name": "link",
+                    "label": "Link",
+                    "type": "link",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. Without a link the card ends after the feature list."
+                },
+                {
+                    "name": "highlight",
+                    "label": "Highlight",
+                    "type": "true_false",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Highlights exactly one plan. Several highlighted plans highlight nothing."
+                }
+            ],
+            "size": 2070
+        },
+        {
+            "type": "series",
+            "title": "Series",
+            "description": "A series with seasons and episodes, poster and the details a series page needs.",
+            "icon": "video-alt2",
+            "version": 1,
+            "note": "Every season is a details element — collapsed, keyboard operable, no JavaScript. Season numbers come from the list order, the episode count is added up. The series is invented.",
+            "capabilities": [
+                "repeater",
+                "nested-repeater",
+                "computed",
+                "semantics",
+                "custom-markup"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 3,
+            "fields": [
+                {
+                    "name": "poster",
+                    "label": "Poster",
+                    "type": "image",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Portrait, at least 600 px tall."
+                },
+                {
+                    "name": "title",
+                    "label": "Title",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "original_title",
+                    "label": "Original title",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Only fill in if it differs from the original title."
+                },
+                {
+                    "name": "first_year",
+                    "label": "First year",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Year of the first episode."
+                },
+                {
+                    "name": "last_year",
+                    "label": "Last year",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Leave empty while the series is running. The view then writes \"since\" instead of a span."
+                },
+                {
+                    "name": "creator",
+                    "label": "Idea",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Who invented the series, not who produced it."
+                },
+                {
+                    "name": "network",
+                    "label": "Network or service",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "genre",
+                    "label": "Genre",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Separate several with commas."
+                },
+                {
+                    "name": "rating",
+                    "label": "Rating",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "From 0 to 10, one decimal place."
+                },
+                {
+                    "name": "seasons",
+                    "label": "Seasons",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One line per season; the order is the broadcast order."
+                },
+                {
+                    "name": "number",
+                    "label": "Season",
+                    "type": "number",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "The number the season runs under. Empty numbers them in sequence in the view."
+                },
+                {
+                    "name": "year",
+                    "label": "Year",
+                    "type": "number",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Year this season first aired."
+                },
+                {
+                    "name": "episodes",
+                    "label": "Episodes",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "The order here is the broadcast order. The view assigns the episode number."
+                },
+                {
+                    "name": "title",
+                    "label": "Title",
+                    "type": "text",
+                    "required": true,
+                    "level": 3,
+                    "instructions": ""
+                },
+                {
+                    "name": "synopsis",
+                    "label": "What it is about",
+                    "type": "textarea",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Three to five sentences, no spoilers."
+                },
+                {
+                    "name": "link",
+                    "label": "Link",
+                    "type": "link",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. Trailer or streaming."
+                }
+            ],
+            "size": 3943
+        },
+        {
+            "type": "stats",
+            "title": "Key figures",
+            "description": "Three to four labelled numbers, marked up as a definition list.",
+            "icon": "chart-bar",
+            "version": 1,
+            "note": "A definition list instead of loose numbers: each figure keeps its label and an optional footnote.",
+            "capabilities": [
+                "repeater",
+                "semantics"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional. For screen readers the heading is the caption of the list."
+                },
+                {
+                    "name": "items",
+                    "label": "Key figures",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One figure per row. Three or four read well; more gets tight."
+                },
+                {
+                    "name": "value",
+                    "label": "Value",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": "A number with a unit, for example 12 years or 98%."
+                },
+                {
+                    "name": "label",
+                    "label": "Caption",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "note",
+                    "label": "Footnote",
+                    "type": "text",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. For example when the figures were collected."
+                }
+            ],
+            "size": 888
+        },
+        {
+            "type": "testimonials",
+            "title": "Testimonials",
+            "description": "Testimonials as quote cards, scrollable sideways — without JavaScript.",
+            "icon": "format-quote",
+            "version": 1,
+            "note": "Quotation semantics: blockquote, cite and an optional photo that simply drops out when empty.",
+            "capabilities": [
+                "repeater",
+                "semantics",
+                "custom-markup"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "heading",
+                    "label": "Heading",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Optional."
+                },
+                {
+                    "name": "items",
+                    "label": "Testimonials",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "One quote per row. From two quotes on, the row can be swiped sideways."
+                },
+                {
+                    "name": "quote",
+                    "label": "Quote",
+                    "type": "textarea",
+                    "required": true,
+                    "level": 2,
+                    "instructions": "Without quotation marks — the output adds them."
+                },
+                {
+                    "name": "name",
+                    "label": "Name",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "role",
+                    "label": "Role",
+                    "type": "text",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. For example company and place."
+                },
+                {
+                    "name": "photo",
+                    "label": "Photo",
+                    "type": "image",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Optional. Without a photo the card shows only the initials."
+                }
+            ],
+            "size": 1771
+        },
+        {
+            "type": "vinyl",
+            "title": "Record",
+            "description": "An album with cover, release details and the full track list by side.",
+            "icon": "album",
+            "version": 1,
+            "note": "Two values nobody types: the track number comes from the row order, the total running time is added up — and only printed when every duration is readable.",
+            "capabilities": [
+                "repeater",
+                "computed",
+                "custom-markup"
+            ],
+            "files": [
+                "definition.json",
+                "render.php",
+                "component.css"
+            ],
+            "depth": 2,
+            "fields": [
+                {
+                    "name": "cover",
+                    "label": "Cover",
+                    "type": "image",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Square image, at least 600 px. Without it, the text moves up."
+                },
+                {
+                    "name": "artist",
+                    "label": "Artist",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "album",
+                    "label": "Album",
+                    "type": "text",
+                    "required": true,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "year",
+                    "label": "Year",
+                    "type": "number",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Year of this release, not of the first publication."
+                },
+                {
+                    "name": "label",
+                    "label": "Label",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": ""
+                },
+                {
+                    "name": "catalog",
+                    "label": "Catalogue number",
+                    "type": "text",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "Sits on the spine of the cover, often hyphenated: SHVL 804."
+                },
+                {
+                    "name": "tracks",
+                    "label": "Tracks",
+                    "type": "repeater",
+                    "required": false,
+                    "level": 1,
+                    "instructions": "The order here is the order on the record. The view assigns the number; it is not maintained here."
+                },
+                {
+                    "name": "side",
+                    "label": "Side",
+                    "type": "select",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "Tracks on the same side sit together on the record."
+                },
+                {
+                    "name": "title",
+                    "label": "Title",
+                    "type": "text",
+                    "required": true,
+                    "level": 2,
+                    "instructions": ""
+                },
+                {
+                    "name": "duration",
+                    "label": "Length",
+                    "type": "text",
+                    "required": false,
+                    "level": 2,
+                    "instructions": "As m:ss, for example 3:42. Leave empty if unknown."
+                }
+            ],
+            "size": 4666
+        }
+    ]
+}

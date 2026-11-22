@@ -3,3 +3,6 @@ dist/
 .astro/
 previews/
 .DS_Store
+
+# generated/ is committed on purpose: GitHub Actions cannot render the components
+# (that needs WordPress), so the export output travels with the repo.

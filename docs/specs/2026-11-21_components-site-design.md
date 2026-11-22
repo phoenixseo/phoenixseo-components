@@ -18,7 +18,7 @@ Nicht Teil davon: Produktseite mit Verkaufsabsicht, Community-Einreichungen, Bew
 | Installation | ZIP pro Komponente + drei Zeilen Anleitung | Funktioniert mit dem Plugin heute, kein Remote-Install; hält den WordPress.org-Review sauber |
 | Startumfang | 10 mitgelieferte Komponenten, danach wachsen | Schnell live; Zuwachs muss auf der Seite sichtbar sein, sonst wirkt sie leer |
 | Sprache | Nur Englisch | Reichweite; deckt sich mit Repo-Beschreibung und readme.txt |
-| Ort | `components.phoenixseo.de`, Astro, statisch | Gleiche Marke wie das Plugin, kein Domain-Risiko, Umzug später möglich |
+| Ort | Astro, statisch — **Host offen, keine Subdomain** (Nutzerentscheidung 2026-11-21) | Build erzeugt reines `dist/`, Ablage später ohne Umbau |
 
 ## Seiten
 
@@ -57,7 +57,7 @@ plugin/schemas/<type>/  →  Export (auf dem Dev-WP)  →  previews/<type>.html 
 
 ## Offen
 
-- Domain-Entscheidung endgültig bestätigen (`components.phoenixseo.de` vorgeschlagen)
+- Host offen — keine eigene Subdomain. `dist/` ist statisch und überall ablegbar.
 - Ob die Startseite auf die Bibliothek oder auf das Plugin verlinkt, sobald ein Komponenten-
   Detail-Link geteilt wird (Canonical, siehe `seo-canonical-anticannibalization`)
 - Rebuild-Trigger: manuell zum Release oder per CI auf Tag im Plugin-Repo

@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import { catalog, capabilities, label, preview, componentCss } from '../lib/catalog';
+
+const data = catalog();
+const tags = capabilities();
+const showcase = 'vinyl';
+const showcaseHtml = preview(showcase);
+const showcaseCss = componentCss(showcase);
+const total = data.components.length;
+---
+
+<Base
+  title="PhoenixSEO Components — free page components for WordPress"
+  description={`${total} free page components for WordPress: real markup, no JavaScript, stored as values instead of HTML. Download one, unzip it into your theme.`}
+  path="/"
+>
+  <style is:inline set:html={showcaseCss}></style>
+
+  <section class="wrap hero">
+    <p class="eyebrow">Component library · GPL-2.0-or-later</p>
+    <h1>Page components that keep the markup out of the content.</h1>
+    <p class="lede">
+      {total} components for WordPress, each one a directory with a field definition, a template
+      and a stylesheet. A page stores which components it uses and what their fields hold — never
+      how they look. Change a template once and every page follows.
+    </p>
+    <div class="hero__actions">
+      <a class="button" href="/components/">Browse {total} components</a>
+      <a class="button button--quiet" href="#install">Install one in a minute</a>
+    </div>
+  </section>
+
+  <section class="wrap showcase" aria-labelledby="showcase-title">
+    <div class="showcase__head">
+      <h2 id="showcase-title">What an example looks like</h2>
+      <p class="small soft">
+        Not a mock-up. This is the component's own output, rendered by the plugin and frozen at
+        build time. The track numbers come from the row order, the running time is added up from
+        the individual durations — neither is a field.
+      </p>
+    </div>
+    <div class="preview preview--sunk">
+      <Fragment set:html={showcaseHtml} />
+    </div>
+  </section>
+
+  <section class="wrap" id="install" aria-labelledby="install-title">
+    <h2 id="install-title">Install one in a minute</h2>
+    <div class="install">
+      <ol class="install__steps">
+        <li>
+          <strong>Download the component's ZIP</strong>
+          <p class="small soft">
+            Every component page has one. The same components ship inside the plugin, so this is
+            only needed for the ones you add later.
+          </p>
+        </li>
+        <li>
+          <strong>Unzip it into <code>wp-content/sdc-components/</code></strong>
+          <p class="small soft">
+            One directory per component. A copy in that folder takes precedence over the plugin's
+            version, becomes editable in the admin, and survives plugin updates.
+          </p>
+        </li>
+        <li>
+          <strong>Pick it from the block inserter</strong>
+          <p class="small soft">
+            Every component type is its own block under <em>PhoenixSEO components</em>. Fill in the
+            fields in the sidebar, see the real markup in the canvas.
+          </p>
+        </li>
+      </ol>
+      <div class="install__note">
+        <p class="eyebrow">Requires</p>
+        <p class="small">
+          WordPress 6.4 or newer, PHP 7.4 or newer, and either Advanced Custom Fields (free) or
+          Secure Custom Fields. No build step, no JavaScript in the frontend.
+        </p>
+        <p class="small">
+          <a href="https://github.com/phoenixseo/sdc-page-builder">Plugin source and releases</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="tags-title">
+    <h2 id="tags-title">Not all ten are the same kind of component</h2>
+    <p class="soft">
+      Some need no code at all and come out of the generic output. Others carry a template because
+      a value has to be computed, an element carries meaning, or a rule spans several rows. Those
+      are the ones worth reading before you write your own.
+    </p>
+    <ul class="taglist">
+      {
+        tags.map((tag) => (
+          <li>
+            <a class="chip" href={`/components/?tag=${tag.name}`}>
+              {label(tag.name)} <span class="chip--count">{tag.count}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap prose" aria-labelledby="why-title">
+    <h2 id="why-title">Why values and not markup</h2>
+    <p>
+      A CMS separates content from presentation. Most page builders do the opposite: they store the
+      content together with the HTML, as a block attribute or a serialised tree. Whoever changes a
+      component afterwards has to follow up on every page — and every page keeps a stale copy of
+      the design.
+    </p>
+    <p>
+      Here a page holds only the values. The markup lives in the component's directory, and the
+      savings are measurable: thirty components come out as one meta entry of 12,583 bytes instead
+      of 1,933 rows, and saving them costs 4 queries instead of 1,807. Those numbers come from the
+      plugin's own test suite, not from a slide.
+    </p>
+    <p>
+      <a href="/format/">How the format works, and how to write your own</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 6vw, 5.5rem) clamp(2rem, 4vw, 3rem);
+  }
+
+  .hero h1 {
+    max-width: 24ch;
+    margin-block: 0.6rem 1rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .showcase {
+    margin-top: 1rem;
+  }
+
+  .showcase__head {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .showcase__head p {
+    max-width: 62ch;
+  }
+
+  .install {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    margin-top: 1.25rem;
+  }
+
+  @media (max-width: 46rem) {
+    .install {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .install__steps {
+    display: grid;
+    gap: 1.15rem;
+    padding-inline-start: 1.35rem;
+    counter-reset: step;
+    list-style: none;
+    max-width: none;
+  }
+
+  .install__steps li {
+    position: relative;
+    padding-inline-start: 2.1rem;
+  }
+
+  .install__steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: grid;
+    place-items: center;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    color: var(--ink-soft);
+  }
+
+  .install__steps strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  .install__steps p {
+    margin-top: 0.2rem;
+  }
+
+  .install__note {
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    align-self: start;
+  }
+
+  .install__note p + p {
+    margin-top: 0.7rem;
+  }
+
+  .taglist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin-top: 1.25rem;
+  }
+
+  section + section {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .prose p {
+    max-width: 64ch;
+  }
+</style>

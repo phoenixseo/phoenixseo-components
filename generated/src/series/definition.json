@@ -1,0 +1,177 @@
+{
+    "key": "group_sdcpb_component_series",
+    "title": "Series",
+    "sdcpb_description": "A series with seasons and episodes, poster and the details a series page needs.",
+    "sdcpb_icon": "video-alt2",
+    "sdcpb_version": 1,
+    "fields": [
+        {
+            "key": "field_sdc_series_poster",
+            "label": "Poster",
+            "name": "poster",
+            "type": "image",
+            "instructions": "Portrait, at least 600 px tall.",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium"
+        },
+        {
+            "key": "field_sdc_series_title",
+            "label": "Title",
+            "name": "title",
+            "type": "text",
+            "required": 1
+        },
+        {
+            "key": "field_sdc_series_original_title",
+            "label": "Original title",
+            "name": "original_title",
+            "type": "text",
+            "instructions": "Only fill in if it differs from the original title.",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_series_first_year",
+            "label": "First year",
+            "name": "first_year",
+            "type": "number",
+            "instructions": "Year of the first episode.",
+            "required": 0,
+            "min": 1920,
+            "max": 2100,
+            "step": 1
+        },
+        {
+            "key": "field_sdc_series_last_year",
+            "label": "Last year",
+            "name": "last_year",
+            "type": "number",
+            "instructions": "Leave empty while the series is running. The view then writes \"since\" instead of a span.",
+            "required": 0,
+            "min": 1920,
+            "max": 2100,
+            "step": 1
+        },
+        {
+            "key": "field_sdc_series_creator",
+            "label": "Idea",
+            "name": "creator",
+            "type": "text",
+            "instructions": "Who invented the series, not who produced it.",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_series_network",
+            "label": "Network or service",
+            "name": "network",
+            "type": "text",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_series_genre",
+            "label": "Genre",
+            "name": "genre",
+            "type": "text",
+            "instructions": "Separate several with commas.",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_series_rating",
+            "label": "Rating",
+            "name": "rating",
+            "type": "number",
+            "instructions": "From 0 to 10, one decimal place.",
+            "required": 0,
+            "min": 0,
+            "max": 10,
+            "step": 0.1
+        },
+        {
+            "key": "field_sdc_series_seasons",
+            "label": "Seasons",
+            "name": "seasons",
+            "type": "repeater",
+            "instructions": "One line per season; the order is the broadcast order.",
+            "required": 0,
+            "layout": "table",
+            "button_label": "Add season",
+            "sub_fields": [
+                {
+                    "key": "field_sdc_series_season_number",
+                    "label": "Season",
+                    "name": "number",
+                    "type": "number",
+                    "instructions": "The number the season runs under. Empty numbers them in sequence in the view.",
+                    "required": 0,
+                    "min": 1,
+                    "max": 100,
+                    "step": 1
+                },
+                {
+                    "key": "field_sdc_series_season_year",
+                    "label": "Year",
+                    "name": "year",
+                    "type": "number",
+                    "instructions": "Year this season first aired.",
+                    "required": 0,
+                    "min": 1920,
+                    "max": 2100,
+                    "step": 1
+                },
+                {
+                    "key": "field_sdc_series_season_episodes",
+                    "label": "Episodes",
+                    "name": "episodes",
+                    "type": "repeater",
+                    "instructions": "The order here is the broadcast order. The view assigns the episode number.",
+                    "required": 0,
+                    "layout": "table",
+                    "button_label": "Add episode",
+                    "sub_fields": [
+                        {
+                            "key": "field_sdc_series_episode_title",
+                            "label": "Title",
+                            "name": "title",
+                            "type": "text",
+                            "required": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "field_sdc_series_synopsis",
+            "label": "What it is about",
+            "name": "synopsis",
+            "type": "textarea",
+            "instructions": "Three to five sentences, no spoilers.",
+            "required": 0,
+            "rows": 5
+        },
+        {
+            "key": "field_sdc_series_link",
+            "label": "Link",
+            "name": "link",
+            "type": "link",
+            "instructions": "Optional. Trailer or streaming.",
+            "required": 0,
+            "return_format": "array"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "sdcpb_component",
+                "operator": "==",
+                "value": "1"
+            }
+        ]
+    ],
+    "menu_order": 90,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": ""
+}

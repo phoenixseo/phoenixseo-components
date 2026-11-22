@@ -1,0 +1,22 @@
+{
+  "note": "Facts as a definition list, the rating as a meter element with bounds, the running time written from a number of minutes. Empty fields drop out instead of leaving blank rows.",
+  "capabilities": ["repeater", "computed", "semantics", "custom-markup"],
+  "data": {
+    "poster": { "url": "/img/movie.jpg", "alt": "Dr. Strangelove poster" },
+    "title": "Dr. Strangelove",
+    "original_title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "year": 1964,
+    "director": "Stanley Kubrick",
+    "genre": "Satire",
+    "runtime": 95,
+    "rating": 8.4,
+    "cast": [
+      { "actor": "Peter Sellers", "role": "Dr. Strangelove / President Merkin Muffley / Lionel Mandrake" },
+      { "actor": "George C. Scott", "role": "General Buck Turgidson" },
+      { "actor": "Sterling Hayden", "role": "General Jack D. Ripper" },
+      { "actor": "Slim Pickens", "role": "Major T. J. Kong" }
+    ],
+    "synopsis": "A general seals off his base and orders the first strike; in the war room the president, the military and a damaged scientist fight over the last hours. Kubrick's comedy about the bomb is one about the men who administer it.",
+    "link": { "title": "View on IMDb", "url": "https://www.imdb.com/title/tt0057012/", "target": "_blank" }
+  }
+}

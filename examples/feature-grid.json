@@ -1,0 +1,34 @@
+{
+  "note": "A select field used as an icon choice: the editor picks from a list, so a typo cannot produce an icon that does not exist.",
+  "capabilities": ["repeater", "custom-markup", "theming"],
+  "data": {
+    "heading": "Built for editorial teams",
+    "intro": "No shortcodes, no HTML in an editor field. Every component is a block with fields you can fill in without a manual.",
+    "items": [
+      {
+        "icon": "check",
+        "title": "Fields instead of markup",
+        "text": "The editor knows the structure. Nested lists, repetitions and images are maintained as fields, not as HTML.",
+        "link": { "title": "", "url": "", "target": "" }
+      },
+      {
+        "icon": "bolt",
+        "title": "One output for everyone",
+        "text": "Frontend and editor preview call the same PHP file. What stands in the editor is what gets delivered.",
+        "link": { "title": "", "url": "", "target": "" }
+      },
+      {
+        "icon": "shield",
+        "title": "No fallbacks needed",
+        "text": "Every value is escaped. A missing view is reported instead of silently rendering an empty area.",
+        "link": { "title": "", "url": "", "target": "" }
+      },
+      {
+        "icon": "chart",
+        "title": "Semantic from the start",
+        "text": "Definition lists for facts, details and summary for seasons, meter for ratings — operable by keyboard, without JavaScript.",
+        "link": { "title": "", "url": "", "target": "" }
+      }
+    ]
+  }
+}

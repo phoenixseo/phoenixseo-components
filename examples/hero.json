@@ -1,0 +1,9 @@
+{
+  "note": "The minimum: a definition and nothing else. The plugin prints the fields generically, which is enough for a heading, a paragraph and a button.",
+  "capabilities": ["definition-only"],
+  "data": {
+    "heading": "Build pages without digging through the theme",
+    "subline": "Every component brings its own fields, its own markup and its own styles. What an editor sees is what the page ships — the same markup, not a mock-up.",
+    "cta": { "title": "Browse the components", "url": "#components", "target": "" }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "note": "Every season is a details element — collapsed, keyboard operable, no JavaScript. Season numbers come from the list order, the episode count is added up. The series is invented.",
+  "capabilities": ["repeater", "nested-repeater", "computed", "semantics", "custom-markup"],
+  "data": {
+    "poster": { "url": "/img/series.jpg", "alt": "Northern Light series poster" },
+    "title": "Northern Light",
+    "original_title": "",
+    "first_year": 2019,
+    "last_year": "",
+    "creator": "Mira Halbach",
+    "network": "Northfilm",
+    "genre": "Drama",
+    "rating": 8.1,
+    "synopsis": "A detective returns to the village where she grew up and finds a case nobody there wants solved.",
+    "seasons": [
+      {
+        "number": 1,
+        "year": 2019,
+        "episodes": [
+          { "title": "Arrival" },
+          { "title": "The Boathouse" },
+          { "title": "Two Witnesses" },
+          { "title": "Frost" },
+          { "title": "The Lock" },
+          { "title": "Expiry Date" }
+        ]
+      },
+      {
+        "number": 2,
+        "year": 2021,
+        "episodes": [
+          { "title": "Return" },
+          { "title": "The Dike" },
+          { "title": "Storm Surge" },
+          { "title": "Low Water" }
+        ]
+      },
+      {
+        "number": 3,
+        "year": 2023,
+        "episodes": [{ "title": "New Moon" }, { "title": "Last Ferry" }]
+      }
+    ],
+    "link": { "title": "All seasons", "url": "#", "target": "" }
+  }
+}

@@ -1,0 +1,70 @@
+{
+    "key": "group_sdcpb_component_stats",
+    "title": "Key figures",
+    "sdcpb_description": "Three to four labelled numbers, marked up as a definition list.",
+    "sdcpb_icon": "chart-bar",
+    "sdcpb_version": 1,
+    "fields": [
+        {
+            "key": "field_sdc_stats_heading",
+            "label": "Heading",
+            "name": "heading",
+            "type": "text",
+            "instructions": "Optional. For screen readers the heading is the caption of the list.",
+            "required": 0,
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_sdc_stats_items",
+            "label": "Key figures",
+            "name": "items",
+            "type": "repeater",
+            "instructions": "One figure per row. Three or four read well; more gets tight.",
+            "required": 0,
+            "layout": "table",
+            "button_label": "Add figure",
+            "sub_fields": [
+                {
+                    "key": "field_sdc_stats_item_value",
+                    "label": "Value",
+                    "name": "value",
+                    "type": "text",
+                    "instructions": "A number with a unit, for example 12 years or 98%.",
+                    "required": 1
+                },
+                {
+                    "key": "field_sdc_stats_item_label",
+                    "label": "Caption",
+                    "name": "label",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_sdc_stats_item_note",
+                    "label": "Footnote",
+                    "name": "note",
+                    "type": "text",
+                    "instructions": "Optional. For example when the figures were collected.",
+                    "required": 0
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "sdcpb_component",
+                "operator": "==",
+                "value": "1"
+            }
+        ]
+    ],
+    "menu_order": 50,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": ""
+}

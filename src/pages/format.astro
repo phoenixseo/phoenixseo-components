@@ -1,0 +1,198 @@
+---
+import Base from '../layouts/Base.astro';
+import { catalog } from '../lib/catalog';
+
+const data = catalog();
+---
+
+<Base
+  title="The format — PhoenixSEO Components"
+  description="A component is a directory: definition.json, an optional render.php and an optional component.css. Here is how the three fit together and when you need which."
+  path="/format/"
+>
+  <div class="wrap prose">
+    <header class="head">
+      <p class="eyebrow">The format</p>
+      <h1>A component is a directory</h1>
+      <p class="lede">
+        Three files at most, no class to extend, no plugin to write. What the editor shows, what the
+        page stores and what the browser gets are three different things, and the directory is
+        where they meet.
+      </p>
+    </header>
+
+    <section aria-labelledby="three-files">
+      <h2 id="three-files">Three files, one directory</h2>
+      <pre><code>{`sdc-components/<type>/
+    definition.json    required — fields, title, icon
+    render.php         optional — markup
+    component.css      optional — presentation`}</code></pre>
+      <p>
+        The directory name <em>is</em> the type. It appears in the field group key
+        (<code>group_sdcpb_component_&lt;type&gt;</code>), in the block name
+        (<code>sdcpb/&lt;type&gt;</code>) and in the path — so lowercase letters, digits and
+        hyphens only. An underscore is a valid component type but not a valid block name, and
+        WordPress rejects <code>sdcpb/feature_grid</code>.
+      </p>
+      <p>
+        <code>render.php</code> receives three variables: <code>$type</code>, <code>$data</code> (the
+        raw values) and <code>$component</code> (the entry from the page document). It prints its
+        own markup, including the wrapping element.
+      </p>
+    </section>
+
+    <section aria-labelledby="where">
+      <h2 id="where">Where a component may live</h2>
+      <p>
+        The same four places are searched for the definition, the template and the stylesheet, in
+        this order. The first match wins, so a child theme overrides the parent theme, both override
+        <code>wp-content/sdc-components/</code>, and the plugin's shipped examples are the last
+        resort.
+      </p>
+      <ol class="paths">
+        <li><code>child theme/sdc-components/</code></li>
+        <li><code>parent theme/sdc-components/</code></li>
+        <li><code>wp-content/sdc-components/</code> — editable in the admin, survives updates</li>
+        <li><code>plugin/schemas/</code> — replaced with every plugin update</li>
+      </ol>
+      <p class="small soft">
+        To change a shipped component, copy it into <code>wp-content/sdc-components/</code>. Editing
+        the plugin's copy works until the next update overwrites it.
+      </p>
+    </section>
+
+    <section aria-labelledby="enough">
+      <h2 id="enough">When <code>definition.json</code> is enough</h2>
+      <p>
+        Without a <code>render.php</code> the plugin prints the fields generically: each field as a
+        labelled block, lists as rows. That is usable for FAQs, addresses and tables — anywhere the
+        order of the fields already is the statement.
+      </p>
+      <p>Custom markup pays off as soon as one of these holds:</p>
+      <ul>
+        <li>
+          The element carries a meaning that fields cannot express
+          (<code>&lt;blockquote&gt;</code>, <code>&lt;dl&gt;</code>, <code>&lt;figure&gt;</code>).
+        </li>
+        <li>A field value is a key that has to be translated first — an icon name, a colour tone.</li>
+        <li>The number of entries decides the layout: one tier or five.</li>
+        <li>A rule spans several rows, like exactly one highlighted tier.</li>
+        <li>Nobody should type a value that can be computed: a track number, a total, a count.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="helpers">
+      <h2 id="helpers">The helpers in <code>render.php</code></h2>
+      <p>
+        All of them print, and all of them escape. <code>sdcpb_value()</code> is the way past the
+        escaping to the raw value.
+      </p>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th scope="col">Helper</th><th scope="col">Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono small">sdcpb_text( 'field' )</td><td>value as text</td></tr>
+            <tr><td class="mono small">sdcpb_html( 'field' )</td><td>value as HTML, through <code>wp_kses_post</code></td></tr>
+            <tr><td class="mono small">sdcpb_attr( 'field' ), sdcpb_url( 'field' )</td><td>value inside an attribute</td></tr>
+            <tr><td class="mono small">sdcpb_has( 'field' )</td><td>does the field hold a value? <code>'0'</code> counts as one</td></tr>
+            <tr><td class="mono small">sdcpb_link( 'field', 'class' )</td><td>an <code>&lt;a&gt;</code> from a link field</td></tr>
+            <tr><td class="mono small">sdcpb_image( 'field', 'large' )</td><td>an <code>&lt;img&gt;</code> with alt, width and height</td></tr>
+            <tr><td class="mono small">sdcpb_image_style( 'field' )</td><td><code>style="--sdc-image:url(…)"</code> for backgrounds</td></tr>
+            <tr><td class="mono small">sdcpb_each( 'list', fn )</td><td>the rows of a repeater</td></tr>
+            <tr><td class="mono small">sdcpb_fields()</td><td>the generic markup, when only the frame is custom</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Inside <code>sdcpb_each()</code> every helper reads the component, not the row. The row comes
+        along as the last argument: <code>sdcpb_text( 'name', $row )</code>.
+      </p>
+    </section>
+
+    <section aria-labelledby="styles">
+      <h2 id="styles">Styles</h2>
+      <p>
+        <code>component.css</code> is loaded automatically as soon as the component appears on the
+        page — nothing to register. It is inlined into the <code>&lt;head&gt;</code>, not linked as a
+        separate file; set <code>sdcpb_inline_component_styles</code> to <code>false</code> to get
+        separate files.
+      </p>
+      <p>
+        The examples work with CSS variables and <code>color-mix()</code> so they stay readable in any
+        theme and can be overridden with a single line:
+      </p>
+      <pre><code>{`.sdc-feature-grid { --sdc-fg-min: 18rem; }
+.sdc-cta { --sdc-cta-bg: #0f766e; --sdc-cta-fg: #ffffff; }`}</code></pre>
+    </section>
+
+    <section aria-labelledby="start">
+      <h2 id="start">Start with one of these</h2>
+      <p>
+        The {data.components.length} components in the catalog double as a course in the format:
+        <a href="/components/hero/">hero</a> and <a href="/components/faq/">faq</a> need no template at
+        all, <a href="/components/vinyl/">vinyl</a> and <a href="/components/series/">series</a> show
+        what a template buys you.
+      </p>
+      <p><a href="/components/">Browse the catalog</a></p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
+  }
+
+  .head h1 {
+    margin-block: 0.5rem 0.85rem;
+    max-width: 26ch;
+  }
+
+  section + section {
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  h2 {
+    margin-bottom: 0.85rem;
+  }
+
+  h2 code {
+    font-size: 0.8em;
+  }
+
+  .prose p,
+  .prose ul,
+  .prose ol {
+    max-width: 66ch;
+  }
+
+  .prose pre {
+    margin-block: 0.5rem 1rem;
+    max-width: 66ch;
+  }
+
+  .prose ul {
+    padding-inline-start: 1.15rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .paths {
+    display: grid;
+    gap: 0.3rem;
+    padding-inline-start: 1.15rem;
+    margin-block: 0.75rem;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-top: 1px solid var(--rule);
+    margin-block: 0.85rem;
+  }
+
+  .table td:first-child {
+    white-space: nowrap;
+  }
+</style>

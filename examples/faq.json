@@ -1,0 +1,25 @@
+{
+  "note": "A repeater with two subfields, printed by the generic output: an accordion of details elements that works without JavaScript.",
+  "capabilities": ["definition-only", "repeater", "semantics"],
+  "data": {
+    "heading": "Questions about the component",
+    "items": [
+      {
+        "q": "Do I need ACF Pro?",
+        "a": "No. The fields run on Advanced Custom Fields (free) and on Secure Custom Fields. Both are detected, neither is required for the output."
+      },
+      {
+        "q": "What happens to existing pages on an update?",
+        "a": "The data stays where it is. If a version renames a stored key, a migration moves the content along — automatically, and additionally through a WP-CLI command with a dry run."
+      },
+      {
+        "q": "Can I create my own components?",
+        "a": "Yes: a directory with definition.json, render.php and component.css. The component then appears in the component list and in the inserter."
+      },
+      {
+        "q": "Does it work without JavaScript in the frontend?",
+        "a": "Yes. The output is HTML and CSS; accordions are details elements, ratings a meter element. Only the editor needs JavaScript."
+      }
+    ]
+  }
+}

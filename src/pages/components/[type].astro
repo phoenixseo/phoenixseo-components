@@ -1,0 +1,483 @@
+---
+import Base from '../../layouts/Base.astro';
+import { catalog, component, preview, componentCss, sources, label } from '../../lib/catalog';
+
+export function getStaticPaths() {
+  return catalog().components.map((entry) => ({
+    params: { type: entry.type },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const data = catalog();
+const html = preview(entry.type);
+const css = componentCss(entry.type);
+const files = sources(entry.type);
+const index = data.components.findIndex((item) => item.type === entry.type);
+const next = data.components[(index + 1) % data.components.length];
+const hasTemplate = entry.files.includes('render.php');
+const hasStyles = entry.files.includes('component.css');
+const escaped = (text: string) => text.replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[char]!);
+---
+
+<Base
+  title={`${entry.title} — PhoenixSEO Components`}
+  description={`${entry.description} Fields, markup and a ZIP download.`}
+  path={`/components/${entry.type}/`}
+>
+  <style is:inline set:html={css}></style>
+
+  <div class="wrap">
+    <nav class="crumbs small" aria-label="Breadcrumb">
+      <a href="/components/">Components</a>
+      <span aria-hidden="true">/</span>
+      <span class="mono">{entry.type}</span>
+    </nav>
+
+    <!-- 01 — what this component is -->
+    <section class="part" aria-labelledby="overview-title">
+      <p class="part__num" aria-hidden="true">01</p>
+      <div class="part__body">
+        <p class="part__label">Overview</p>
+        <h1 id="overview-title">{entry.title}</h1>
+        <p class="lede">{entry.description}</p>
+        <div class="chips">
+          {entry.capabilities.map((capability) => <span class="chip">{label(capability)}</span>)}
+        </div>
+
+        <dl class="facts">
+          <div>
+            <dt>Type</dt>
+            <dd class="mono">sdcpb/{entry.type}</dd>
+          </div>
+          <div>
+            <dt>Template</dt>
+            <dd>{hasTemplate ? 'own render.php' : 'generic output'}</dd>
+          </div>
+          <div>
+            <dt>Fields</dt>
+            <dd>{entry.fields.length}{entry.depth > 1 ? ` · ${entry.depth} deep` : ''}</dd>
+          </div>
+          <div>
+            <dt>Version</dt>
+            <dd>{entry.version}</dd>
+          </div>
+          <div>
+            <dt>Rendered</dt>
+            <dd>{(entry.size / 1024).toFixed(1)} kB</dd>
+          </div>
+          <div>
+            <dt>License</dt>
+            <dd>GPL-2.0-or-later</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 02 — what it looks like -->
+    <section class="part" aria-labelledby="preview-title">
+      <p class="part__num" aria-hidden="true">02</p>
+      <div class="part__body">
+        <p class="part__label">Presentation</p>
+        <h2 id="preview-title">What it looks like</h2>
+        <p class="part__lede">
+          Rendered by the plugin at build time — the same markup the frontend prints. No screenshot,
+          no JavaScript in this page, no restyling by the site.
+        </p>
+
+        <div class="stage">
+          <p class="stage__tag mono">component output</p>
+          <div class="preview">
+            <Fragment set:html={html} />
+          </div>
+        </div>
+
+        {entry.note && <p class="note small soft">{entry.note}</p>}
+        {
+          !hasStyles && (
+            <p class="note small soft">
+              This component ships no stylesheet. The plugin prints the fields and leaves the
+              typography to the theme — in the preview that is the theme's own body styles, not part
+              of the component.
+            </p>
+          )
+        }
+      </div>
+    </section>
+
+    <!-- 03 — how it is built and installed -->
+    <section class="part" aria-labelledby="tech-title">
+      <p class="part__num" aria-hidden="true">03</p>
+      <div class="part__body">
+        <p class="part__label">Technical</p>
+        <h2 id="tech-title">How it works</h2>
+        <p class="part__lede">
+          One directory, at most three files. The plugin finds the component by its directory name,
+          shows its fields in the sidebar and prints the values on the page.
+        </p>
+
+        <div class="tech">
+          <div class="tech__install">
+            <h3 class="sub">Install</h3>
+            <p class="small">
+              Unzip into <code>wp-content/sdc-components/</code> so that
+              <code>wp-content/sdc-components/{entry.type}/definition.json</code> exists. That copy
+              takes precedence over the plugin's version, is editable in the admin and survives
+              plugin updates.
+            </p>
+            <pre><code>{`cd wp-content
+mkdir -p sdc-components
+unzip ${entry.type}.zip -d sdc-components/
+# -> sdc-components/${entry.type}/
+#    ${entry.files.join(' ')}`}</code></pre>
+            <a class="button" href={`/download/${entry.type}.zip`} download>
+              Download {entry.type}.zip
+            </a>
+          </div>
+
+          <div class="tech__fields">
+            <h3 class="sub">
+              Fields <span class="faint mono">{entry.fields.length}</span>
+            </h3>
+            <p class="small soft">
+              Taken from the component's <code>definition.json</code>.
+              {entry.depth > 1 ? ` Repeaters nest ${entry.depth} levels.` : ''}
+            </p>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Label</th>
+                    <th scope="col">Req.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    entry.fields.map((field) => (
+                      <tr data-level={field.level}>
+                        <td>
+                          <code>{field.name}</code>
+                          {field.instructions && (
+                            <span class="soft small"> — {field.instructions}</span>
+                          )}
+                        </td>
+                        <td class="mono small">{field.type}</td>
+                        <td class="small">{field.label}</td>
+                        <td class="small">{field.required ? 'yes' : <span class="faint">—</span>}</td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 — the source -->
+    <section class="part" aria-labelledby="files-title">
+      <p class="part__num" aria-hidden="true">04</p>
+      <div class="part__body">
+        <p class="part__label">Code</p>
+        <h2 id="files-title">The source</h2>
+        <p class="part__lede">
+          {files.length === 1
+            ? 'One file. The plugin prints the fields generically — no template needed.'
+            : `${files.length} files, one directory. Copy them, change them, keep them.`}
+        </p>
+
+        <div class="files">
+          {
+            files.map((file) => (
+              <details class="disclosure">
+                <summary>
+                  <span class="mono">{file.name}</span>
+                  <span class="faint mono small">{(file.code.length / 1024).toFixed(1)} kB</span>
+                </summary>
+                <pre><code set:html={escaped(file.code)} /></pre>
+              </details>
+            ))
+          }
+        </div>
+
+        <p class="small soft">
+          Field group key <code>group_sdcpb_component_{entry.type}</code> · built with
+          <a href={data.plugin.repo}>PhoenixSEO Page Builder {data.plugin.version}</a>.
+        </p>
+      </div>
+    </section>
+
+    <nav class="next small" aria-label="Next component">
+      <span class="faint">Next</span>
+      <a href={`/components/${next.type}/`}>{next.title} →</a>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .crumbs {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    padding-block-start: 1.5rem;
+    color: var(--ink-faint);
+  }
+
+  .crumbs a {
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  /* Four numbered blocks: overview, presentation, technical, code. The number
+     gets its own column, so the break between blocks is visible before a word
+     is read. */
+  .part {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    column-gap: clamp(0.75rem, 2vw, 1.75rem);
+    padding-block: clamp(2.25rem, 4.5vw, 3.5rem);
+    border-top: 1px solid var(--rule-strong);
+    margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+    scroll-margin-top: 5rem;
+  }
+
+  .part:first-of-type {
+    margin-top: 0;
+  }
+
+  .part__num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    padding-block-start: 0.3rem;
+    border-inline-start: 2px solid var(--rule);
+    padding-inline-start: 0.6rem;
+    height: fit-content;
+    margin: 0;
+  }
+
+  .part__body {
+    display: grid;
+    gap: 0.85rem;
+    min-width: 0;
+    justify-items: start;
+  }
+
+  .part__label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .part h1 {
+    font-size: clamp(1.85rem, 1.2rem + 2vw, 2.6rem);
+    max-width: 30ch;
+    margin: 0;
+  }
+
+  .part h2 {
+    margin: 0;
+  }
+
+  .part__lede {
+    max-width: 62ch;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* --- 01 facts --- */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: 100%;
+    margin-block-start: 0.5rem;
+  }
+
+  .facts > div {
+    background: var(--paper);
+    padding: 0.5rem 0.7rem;
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .facts dt {
+    font-family: var(--mono);
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--ink-faint);
+  }
+
+  .facts dd {
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* --- 02 stage: preview on a grey band, the output itself on white --- */
+  .stage {
+    position: relative;
+    width: 100%;
+    margin-block-start: 0.35rem;
+    padding: clamp(1.9rem, 3vw, 2.4rem) clamp(1rem, 2.5vw, 1.5rem)
+      clamp(1rem, 2.5vw, 1.5rem);
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+
+  .stage__tag {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    background: var(--paper);
+    border-inline-end: 1px solid var(--rule);
+    border-block-end: 1px solid var(--rule);
+    border-start-start-radius: var(--radius);
+    padding: 0.15rem 0.5rem;
+    margin: 0;
+  }
+
+  .stage .preview {
+    background: var(--paper);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  }
+
+  .note {
+    max-width: 68ch;
+    border-inline-start: 2px solid var(--rule-strong);
+    padding-inline-start: 0.9rem;
+    margin: 0;
+  }
+
+  /* --- 03 technical --- */
+  .tech {
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    width: 100%;
+    margin-block-start: 0.35rem;
+  }
+
+  @media (max-width: 52rem) {
+    .tech {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .sub {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    font-weight: 600;
+    padding-block-end: 0.45rem;
+    border-block-end: 1px solid var(--rule);
+    width: 100%;
+    margin-block: 0 0.7rem;
+    display: flex;
+    gap: 0.4rem;
+    justify-content: space-between;
+  }
+
+  .tech__install p {
+    margin: 0;
+  }
+
+  .tech__install pre {
+    margin-block: 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  /* --- 04 code --- */
+  .files {
+    width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-block-start: 0.35rem;
+  }
+
+  .files .disclosure {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .files .disclosure + .disclosure {
+    border-top: 1px solid var(--rule);
+  }
+
+  .files summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    font-size: 0.8125rem;
+  }
+
+  .files pre {
+    max-height: 34rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  /* --- next --- */
+  .next {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    border-top: 1px solid var(--rule-strong);
+    padding-block: 1.25rem 0;
+  }
+
+  .next a {
+    text-decoration: none;
+    font-weight: 550;
+  }
+
+  .next a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 44rem) {
+    .part {
+      grid-template-columns: 1fr;
+      row-gap: 0.6rem;
+    }
+
+    .part__num {
+      border-inline-start: 0;
+      padding-inline-start: 0;
+      padding-block-start: 0;
+    }
+  }
+</style>

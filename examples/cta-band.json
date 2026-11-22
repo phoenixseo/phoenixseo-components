@@ -1,0 +1,12 @@
+{
+  "note": "One band across the full width, two links and three tones from a select field. The second link disappears when it is empty.",
+  "capabilities": ["custom-markup", "theming"],
+  "data": {
+    "eyebrow": "See it yourself",
+    "heading": "The components ship inside the plugin",
+    "text": "Anyone who has the plugin installed can rebuild these examples field by field, without writing a file.",
+    "primary": { "title": "Get the plugin", "url": "#", "target": "" },
+    "secondary": { "title": "Questions?", "url": "#", "target": "" },
+    "tone": "dark"
+  }
+}

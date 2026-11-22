@@ -1,0 +1,142 @@
+{
+    "key": "group_sdcpb_component_movie",
+    "title": "Movie",
+    "sdcpb_description": "A film with poster, the hard facts in a definition list, cast and synopsis.",
+    "sdcpb_icon": "format-video",
+    "sdcpb_version": 1,
+    "fields": [
+        {
+            "key": "field_sdc_movie_poster",
+            "label": "Poster",
+            "name": "poster",
+            "type": "image",
+            "instructions": "Portrait, at least 600 px tall. Without it, the text starts on the left.",
+            "required": 0,
+            "return_format": "array",
+            "preview_size": "medium"
+        },
+        {
+            "key": "field_sdc_movie_title",
+            "label": "Title",
+            "name": "title",
+            "type": "text",
+            "required": 1
+        },
+        {
+            "key": "field_sdc_movie_original_title",
+            "label": "Original title",
+            "name": "original_title",
+            "type": "text",
+            "instructions": "Only fill in if it differs from the original title.",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_movie_year",
+            "label": "Release year",
+            "name": "year",
+            "type": "number",
+            "required": 0,
+            "min": 1890,
+            "max": 2100,
+            "step": 1
+        },
+        {
+            "key": "field_sdc_movie_director",
+            "label": "Director",
+            "name": "director",
+            "type": "text",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_movie_genre",
+            "label": "Genre",
+            "name": "genre",
+            "type": "text",
+            "instructions": "Separate several with commas: drama, thriller.",
+            "required": 0
+        },
+        {
+            "key": "field_sdc_movie_runtime",
+            "label": "Runtime in minutes",
+            "name": "runtime",
+            "type": "number",
+            "instructions": "The number only, 117 instead of 1:57. The view turns that into 1h 57m.",
+            "required": 0,
+            "min": 1,
+            "max": 1200,
+            "step": 1
+        },
+        {
+            "key": "field_sdc_movie_rating",
+            "label": "Rating",
+            "name": "rating",
+            "type": "number",
+            "instructions": "From 0 to 10, one decimal place: 8.4. Leave empty if there is none.",
+            "required": 0,
+            "min": 0,
+            "max": 10,
+            "step": 0.1
+        },
+        {
+            "key": "field_sdc_movie_cast",
+            "label": "Cast",
+            "name": "cast",
+            "type": "repeater",
+            "instructions": "The order here is the order in the credits.",
+            "required": 0,
+            "layout": "table",
+            "button_label": "Add person",
+            "sub_fields": [
+                {
+                    "key": "field_sdc_movie_cast_name",
+                    "label": "Name",
+                    "name": "actor",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_sdc_movie_cast_role",
+                    "label": "Role",
+                    "name": "role",
+                    "type": "text",
+                    "instructions": "Optional. Sits after the name as \"as …\".",
+                    "required": 0
+                }
+            ]
+        },
+        {
+            "key": "field_sdc_movie_synopsis",
+            "label": "Synopsis",
+            "name": "synopsis",
+            "type": "textarea",
+            "instructions": "Three to five sentences. No spoilers.",
+            "required": 0,
+            "rows": 5
+        },
+        {
+            "key": "field_sdc_movie_link",
+            "label": "Link",
+            "name": "link",
+            "type": "link",
+            "instructions": "Optional. Trailer, streaming or cinema.",
+            "required": 0,
+            "return_format": "array"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "sdcpb_component",
+                "operator": "==",
+                "value": "1"
+            }
+        ]
+    ],
+    "menu_order": 80,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": ""
+}

@@ -1,0 +1,31 @@
+{
+  "note": "Two values nobody types: the track number comes from the row order, the total running time is added up — and only printed when every duration is readable.",
+  "capabilities": ["repeater", "computed", "custom-markup"],
+  "data": {
+    "cover": { "url": "/img/vinyl.jpg", "alt": "Abbey Road record sleeve" },
+    "artist": "The Beatles",
+    "album": "Abbey Road",
+    "year": 1969,
+    "label": "Apple",
+    "catalog": "PCS 7088",
+    "tracks": [
+      { "side": "A", "title": "Come Together", "duration": "4:20" },
+      { "side": "A", "title": "Something", "duration": "3:03" },
+      { "side": "A", "title": "Maxwell's Silver Hammer", "duration": "3:27" },
+      { "side": "A", "title": "Oh! Darling", "duration": "3:26" },
+      { "side": "A", "title": "Octopus's Garden", "duration": "2:51" },
+      { "side": "A", "title": "I Want You (She's So Heavy)", "duration": "7:47" },
+      { "side": "B", "title": "Here Comes the Sun", "duration": "3:05" },
+      { "side": "B", "title": "Because", "duration": "2:45" },
+      { "side": "B", "title": "You Never Give Me Your Money", "duration": "4:02" },
+      { "side": "B", "title": "Sun King", "duration": "2:26" },
+      { "side": "B", "title": "Mean Mr. Mustard", "duration": "1:06" },
+      { "side": "B", "title": "Polythene Pam", "duration": "1:12" },
+      { "side": "B", "title": "She Came In Through the Bathroom Window", "duration": "1:57" },
+      { "side": "B", "title": "Golden Slumbers", "duration": "1:31" },
+      { "side": "B", "title": "Carry That Weight", "duration": "1:36" },
+      { "side": "B", "title": "The End", "duration": "2:19" },
+      { "side": "B", "title": "Her Majesty", "duration": "0:23" }
+    ]
+  }
+}

@@ -1,0 +1,269 @@
+---
+import Base from '../../layouts/Base.astro';
+import { catalog, capabilities, label, componentCss } from '../../lib/catalog';
+
+const data = catalog();
+const tags = capabilities();
+const components = data.components;
+
+// One stylesheet per component, inlined: the cards show the components' own
+// output boxes only where a component has a stylesheet of its own.
+const styles = components
+  .map((entry) => componentCss(entry.type))
+  .filter(Boolean)
+  .join('\n');
+---
+
+<Base
+  title="All components — PhoenixSEO Components"
+  description={`${components.length} free WordPress page components, listed by what they demonstrate: repeaters, nested rows, computed values, semantic markup, plain definitions.`}
+  path="/components/"
+>
+  <style is:inline set:html={styles}></style>
+
+  <div class="wrap">
+    <header class="head">
+      <p class="eyebrow">Catalog</p>
+      <h1>{components.length} components</h1>
+      <p class="lede">
+        Each page shows the component's real output, the fields it takes, the three files it
+        consists of, and a ZIP of those files. New components are added as they are written.
+      </p>
+    </header>
+
+    <div class="filters">
+      <div class="filters__search">
+        <label class="visually-hidden" for="q">Filter components</label>
+        <input
+          id="q"
+          type="search"
+          placeholder="Filter by name or capability…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+      <div class="chips" role="group" aria-label="Filter by capability">
+        <button type="button" class="chip chip--button" data-tag="" aria-pressed="true">
+          All <span class="chip--count">{components.length}</span>
+        </button>
+        {
+          tags.map((tag) => (
+            <button type="button" class="chip chip--button" data-tag={tag.name} aria-pressed="false">
+              {label(tag.name)} <span class="chip--count">{tag.count}</span>
+            </button>
+          ))
+        }
+      </div>
+      <p class="small faint filters__status" id="status" aria-live="polite"></p>
+    </div>
+
+    <ul class="grid" id="grid">
+      {
+        components.map((entry) => (
+          <li class="card" data-type={entry.type} data-tags={entry.capabilities.join(' ')}>
+            <a class="card__link" href={`/components/${entry.type}/`}>
+              <span class="card__type mono">{entry.type}</span>
+              <span class="card__title">{entry.title}</span>
+              <span class="card__desc">{entry.description}</span>
+            </a>
+            <div class="card__foot">
+              <div class="chips">
+                {entry.capabilities.slice(0, 3).map((capability) => (
+                  <span class="chip">{label(capability)}</span>
+                ))}
+              </div>
+              <span class="small faint card__meta">
+                {entry.fields.length} fields
+                {entry.files.includes('render.php') ? ' · template' : ' · definition only'}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="empty" id="empty" hidden>No component matches that filter.</p>
+  </div>
+</Base>
+
+<script>
+  const grid = document.getElementById('grid') as HTMLUListElement;
+  const cards = [...grid.querySelectorAll<HTMLLIElement>('.card')];
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('.chip--button')];
+  const search = document.getElementById('q') as HTMLInputElement;
+  const status = document.getElementById('status') as HTMLParagraphElement;
+  const empty = document.getElementById('empty') as HTMLParagraphElement;
+
+  let activeTag = new URLSearchParams(location.search).get('tag') ?? '';
+
+  function apply(): void {
+    const query = search.value.trim().toLowerCase();
+    let visible = 0;
+
+    for (const card of cards) {
+      const tags = (card.dataset.tags ?? '').split(' ');
+      const text = `${card.dataset.type} ${card.textContent}`.toLowerCase();
+      const matchesTag = !activeTag || tags.includes(activeTag);
+      const matchesQuery = !query || text.includes(query);
+      const show = matchesTag && matchesQuery;
+
+      card.hidden = !show;
+      visible += show ? 1 : 0;
+    }
+
+    for (const button of buttons) {
+      button.setAttribute('aria-pressed', String(button.dataset.tag === activeTag));
+    }
+
+    status.textContent = visible === cards.length ? '' : `${visible} of ${cards.length} shown`;
+    empty.hidden = visible > 0;
+  }
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      activeTag = button.dataset.tag ?? '';
+      const url = new URL(location.href);
+      if (activeTag) {
+        url.searchParams.set('tag', activeTag);
+      } else {
+        url.searchParams.delete('tag');
+      }
+      history.replaceState(null, '', url);
+      apply();
+    });
+  }
+
+  search.addEventListener('input', apply);
+  apply();
+</script>
+
+<style>
+  .head {
+    padding-block: clamp(2.5rem, 5vw, 4rem) 1.5rem;
+  }
+
+  .head h1 {
+    font-size: clamp(1.85rem, 1.2rem + 2vw, 2.75rem);
+    margin-block: 0.5rem 0.75rem;
+  }
+
+  .filters {
+    display: grid;
+    gap: 0.85rem;
+    padding-block-end: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 1.75rem;
+  }
+
+  .filters__search input {
+    width: 100%;
+    max-width: 28rem;
+    font: inherit;
+    font-size: 0.9375rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .filters__search input::placeholder {
+    color: var(--ink-faint);
+  }
+
+  .chip--button {
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+
+  .chip--button:hover {
+    border-color: var(--ink-faint);
+    color: var(--ink);
+  }
+
+  .chip--button[aria-pressed='true'] {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: color-mix(in oklab, var(--accent) 8%, white);
+  }
+
+  .filters__status {
+    min-height: 1.2em;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+  }
+
+  .card {
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.15rem 1.25rem 1rem;
+    transition: background-color 120ms ease;
+  }
+
+  .card:hover {
+    background: var(--paper-sunk);
+  }
+
+  .card__link {
+    display: grid;
+    gap: 0.3rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card__type {
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+
+  .card__title {
+    font-size: 1.0625rem;
+    font-weight: 620;
+    letter-spacing: -0.008em;
+  }
+
+  .card:hover .card__title {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.18em;
+  }
+
+  .card__desc {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .card__foot {
+    margin-top: auto;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .card__meta {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+  }
+
+  .empty {
+    padding-block: 2rem;
+    color: var(--ink-soft);
+  }
+</style>

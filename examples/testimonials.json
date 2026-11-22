@@ -1,0 +1,27 @@
+{
+  "note": "Quotation semantics: blockquote, cite and an optional photo that simply drops out when empty.",
+  "capabilities": ["repeater", "semantics", "custom-markup"],
+  "data": {
+    "heading": "How it feels",
+    "items": [
+      {
+        "quote": "I rebuilt three pages without touching a single file. That is the difference I meant.",
+        "name": "Marlene Wiese",
+        "role": "Editorial lead, Example Press",
+        "photo": ""
+      },
+      {
+        "quote": "The preview matches the frontend. Before, I reloaded after every change to check it still stood.",
+        "name": "Jonas Kreft",
+        "role": "Web development, Example Agency",
+        "photo": ""
+      },
+      {
+        "quote": "A new component is a PHP file and a field catalogue. We could do that ourselves after a week.",
+        "name": "Aylin Demir",
+        "role": "Technical lead, Example Ltd",
+        "photo": ""
+      }
+    ]
+  }
+}

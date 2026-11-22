@@ -1,0 +1,13 @@
+{
+  "note": "A definition list instead of loose numbers: each figure keeps its label and an optional footnote.",
+  "capabilities": ["repeater", "semantics"],
+  "data": {
+    "heading": "In numbers",
+    "items": [
+      { "value": "10", "label": "Components", "note": "each with its own fields" },
+      { "value": "1", "label": "Host plugin", "note": "ACF or SCF, nothing else" },
+      { "value": "3", "label": "Tabs", "note": "content, view, styles" },
+      { "value": "0", "label": "Lines of JavaScript", "note": "in the frontend output" }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
+
+const { title, description, path } = Astro.props;
+const canonical = new URL(path, Astro.site).href;
+const nav = [
+  { href: '/components/', label: 'Components' },
+  { href: '/format/', label: 'The format' },
+  { href: '/catalog.json', label: 'catalog.json' },
+];
+const current = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-head">
+      <div class="wrap site-head__inner">
+        <a class="brand" href="/">PhoenixSEO Components <span>for WordPress</span></a>
+        <nav class="site-nav" aria-label="Main">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap site-foot__inner">
+        <span>Free components, GPL-2.0-or-later. Built with the PhoenixSEO Page Builder.</span>
+        <a href="https://github.com/phoenixseo/sdc-page-builder">Plugin source</a>
+        <a href="https://phoenixseo.de">phoenixseo.de</a>
+      </div>
+    </footer>
+  </body>
+</html>

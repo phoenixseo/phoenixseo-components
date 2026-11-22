@@ -1,0 +1,125 @@
+{
+    "key": "group_sdcpb_component_pricing-table",
+    "title": "Pricing",
+    "sdcpb_description": "Plan cards with a feature list and one highlighted plan.",
+    "sdcpb_icon": "money-alt",
+    "sdcpb_version": 1,
+    "fields": [
+        {
+            "key": "field_sdc_pricing-table_heading",
+            "label": "Heading",
+            "name": "heading",
+            "type": "text",
+            "instructions": "Optional.",
+            "required": 0,
+            "default_value": "",
+            "placeholder": ""
+        },
+        {
+            "key": "field_sdc_pricing-table_intro",
+            "label": "Intro",
+            "name": "intro",
+            "type": "textarea",
+            "instructions": "Optional. For example a note on the term or net prices.",
+            "required": 0,
+            "rows": 3
+        },
+        {
+            "key": "field_sdc_pricing-table_plans",
+            "label": "Plans",
+            "name": "plans",
+            "type": "repeater",
+            "instructions": "One plan per row. The features are a list of their own within each row.",
+            "required": 0,
+            "layout": "table",
+            "button_label": "Add plan",
+            "sub_fields": [
+                {
+                    "key": "field_sdc_pricing-table_plan_name",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "text",
+                    "required": 1
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_price",
+                    "label": "Price",
+                    "name": "price",
+                    "type": "text",
+                    "instructions": "Number and currency, for example $89. No calculation, no formatting.",
+                    "required": 1
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_period",
+                    "label": "Period",
+                    "name": "period",
+                    "type": "text",
+                    "instructions": "Optional. Sits small next to the price, for example / month.",
+                    "required": 0
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_description",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "textarea",
+                    "instructions": "Optional. One sentence on who the plan is for.",
+                    "required": 0,
+                    "rows": 2
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_features",
+                    "label": "Features",
+                    "name": "features",
+                    "type": "repeater",
+                    "instructions": "One feature per row.",
+                    "required": 0,
+                    "layout": "table",
+                    "button_label": "Add feature",
+                    "sub_fields": [
+                        {
+                            "key": "field_sdc_pricing-table_plan_feature_text",
+                            "label": "Feature",
+                            "name": "text",
+                            "type": "text",
+                            "required": 1
+                        }
+                    ]
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_link",
+                    "label": "Link",
+                    "name": "link",
+                    "type": "link",
+                    "instructions": "Optional. Without a link the card ends after the feature list.",
+                    "required": 0,
+                    "return_format": "array"
+                },
+                {
+                    "key": "field_sdc_pricing-table_plan_highlight",
+                    "label": "Highlight",
+                    "name": "highlight",
+                    "type": "true_false",
+                    "instructions": "Highlights exactly one plan. Several highlighted plans highlight nothing.",
+                    "required": 0,
+                    "ui": 1
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "sdcpb_component",
+                "operator": "==",
+                "value": "1"
+            }
+        ]
+    ],
+    "menu_order": 40,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "description": ""
+}
