@@ -10,6 +10,15 @@
   :where(body, h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol, table) {
     margin: 0;
   }
+
+  /* The browser's own rule for [hidden] loses to any author `display`. Two
+     features here hide elements by setting .hidden: the filter cards (grid
+     items, display:flex) and the consent banner (fixed). Both kept rendering
+     while carrying the attribute, so the filter looked dead. Ask for it once,
+     loudly, instead of remembering a special case per element. */
+  [hidden] {
+    display: none !important;
+  }
 }
 
 @layer base {
@@ -303,7 +312,8 @@
   }
 
   /* Consent bar: fixed to the bottom edge, one row on wide screens, stacked on
-     a phone. `display: flex` beats the hidden attribute, so it is spelled out. */
+     a phone. The `[hidden]` rule in the reset layer keeps it out of the way
+     until a choice is needed. */
   .consent {
     position: fixed;
     inset-inline: 0;
@@ -313,10 +323,6 @@
     border-top: 1px solid var(--rule-strong);
     box-shadow: 0 -10px 30px rgb(22 24 29 / 0.07);
     padding-block: 0.9rem;
-  }
-
-  .consent[hidden] {
-    display: none;
   }
 
   .consent__inner {
