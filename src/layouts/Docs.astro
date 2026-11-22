@@ -43,7 +43,7 @@ const isCurrent = (href: string) => (href === '/docs/' ? current === '/docs/' : 
         doc !== 'index' && (
           <>
             <span aria-hidden="true">/</span>
-            <span class="mono">{chapters.find((chapter) => chapter.href === path)?.label.toLowerCase() ?? doc}</span>
+            <span class="mono">{chapters.find((chapter) => chapter.href === path)?.label ?? doc}</span>
           </>
         )
       }

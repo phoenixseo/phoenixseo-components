@@ -134,6 +134,10 @@ unzip ${entry.type}.zip -d sdc-components/
             <a class="button" href={`/download/${entry.type}.zip`} download>
               Download {entry.type}.zip
             </a>
+            <p class="small tech__docs">
+              Not installed yet? <a href="/docs/install/">Chapter 02</a> covers the plugin, and
+              <a href="/docs/use/">chapter 03</a> shows where the fields appear once this block is on a page.
+            </p>
           </div>
 
           <div class="tech__fields">
@@ -564,6 +568,12 @@ unzip ${entry.type}.zip -d sdc-components/
     margin-block: 0.75rem;
     font-size: 0.75rem;
     line-height: 1.7;
+  }
+
+  .tech__docs {
+    margin-block-start: 0.85rem;
+    color: var(--ink-faint);
+    max-width: 34ch;
   }
 
   .table-wrap {
