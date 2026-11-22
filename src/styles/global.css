@@ -196,7 +196,8 @@
 
   .site-nav {
     display: flex;
-    gap: 1.35rem;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.35rem;
     margin-inline-start: auto;
     font-size: 0.9375rem;
   }
@@ -204,11 +205,24 @@
   .site-nav a {
     text-decoration: none;
     color: var(--ink-soft);
+    white-space: nowrap;
   }
 
   .site-nav a:hover,
   .site-nav a[aria-current='page'] {
     color: var(--ink);
+  }
+
+  @media (max-width: 36rem) {
+    .site-head__inner {
+      gap: 0.4rem 1rem;
+      padding-block: 0.55rem;
+    }
+
+    .site-nav {
+      gap: 0.25rem 0.85rem;
+      font-size: 0.875rem;
+    }
   }
 
   .site-nav a[aria-current='page'] {

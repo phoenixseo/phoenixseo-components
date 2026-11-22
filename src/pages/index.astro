@@ -16,35 +16,102 @@ const showcaseCss = componentCss(showcase);
 >
   <style is:inline set:html={showcaseCss}></style>
 
-  <section class="wrap hero">
-    <p class="eyebrow">Free · GPL-2.0-or-later · no account, no licence key</p>
-    <h1>Write a component once. Every page follows.</h1>
-    <p class="lede">
-      A component is a folder: the fields, the markup, the stylesheet. A page stores which
-      component sits where and what its fields hold — never the HTML. The markup is read from
-      disk on each page load, so editing the template changes every instance at once.
-    </p>
-    <p class="lede lede--second">
-      You build the hero, the FAQ, the pricing table you actually need, shaped the way the design
-      asks for. Copy the folder into the next project and the fields come along; swap
-      <code>component.css</code> and the same component wears that site's look.
-    </p>
-    <p class="lede lede--second">
-      Block patterns bake their markup into the post and leave it there. This does not. And it
-      costs nothing: no account, no licence key, one dependency — Advanced Custom Fields in its
-      free edition, or Secure Custom Fields — and the builder renders repeaters and groups itself.
-    </p>
-    <div class="hero__actions">
-      <a class="button" href="/components/">Browse the components</a>
-      <a class="button button--quiet" href="#free">What it costs</a>
-    </div>
-    <dl class="facts">
-      <div><dt>Licence</dt><dd>GPL-2.0-or-later</dd></div>
-      <div><dt>Account</dt><dd>none</dd></div>
-      <div><dt>Build step</dt><dd>none</dd></div>
-      <div><dt>Dependency</dt><dd>ACF free or SCF</dd></div>
-    </dl>
-  </section>
+  <div class="hero-band">
+    <section class="wrap hero">
+      <div class="hero__text">
+        <p class="eyebrow">Free · GPL-2.0-or-later · no account, no key</p>
+        <h1>Write a component once. Every page follows.</h1>
+        <p class="lede">
+          A component is a folder: the fields, the markup, the stylesheet. A page stores which
+          component sits where and what its fields hold — never the HTML. Edit the template and
+          every instance follows.
+        </p>
+        <p class="lede lede--second">
+          You build the hero, the FAQ, the pricing table the design asks for. Copy the folder into
+          the next project and the fields come along; swap <code>component.css</code> and it wears
+          that site's look.
+        </p>
+        <div class="hero__actions">
+          <a class="button" href="/components/">Browse the components</a>
+          <a class="button button--quiet" href="#free">What it costs</a>
+        </div>
+        <dl class="facts">
+          <div><dt>Licence</dt><dd>GPL-2.0-or-later</dd></div>
+          <div><dt>Account</dt><dd>none</dd></div>
+          <div><dt>Build step</dt><dd>none</dd></div>
+          <div><dt>Dependency</dt><dd>ACF free or SCF</dd></div>
+        </dl>
+      </div>
+
+      <figure class="hero__art">
+        <svg class="art" viewBox="0 0 480 352" role="img" aria-labelledby="art-title">
+          <title id="art-title"
+            >One template edit in render.php reaches every page that uses the component.</title
+          >
+          <defs>
+            <path id="wire-stem" pathLength="100" d="M240 104 V126" />
+            <path id="wire-bus" pathLength="100" d="M76 126 H404" />
+            <path id="wire-a" pathLength="100" d="M76 126 V166" />
+            <path id="wire-b" pathLength="100" d="M240 126 V166" />
+            <path id="wire-c" pathLength="100" d="M404 126 V166" />
+          </defs>
+
+          <g class="art__wires">
+            <use href="#wire-stem" />
+            <use href="#wire-bus" />
+            <use href="#wire-a" />
+            <use href="#wire-b" />
+            <use href="#wire-c" />
+          </g>
+          <g class="art__flows">
+            <use href="#wire-stem" class="art__flow" />
+            <use href="#wire-bus" class="art__flow" />
+            <use href="#wire-a" class="art__flow" />
+            <use href="#wire-b" class="art__flow" />
+            <use href="#wire-c" class="art__flow" />
+          </g>
+
+          <g class="art__src">
+            <rect class="art__card" x="130" y="0" width="220" height="104" rx="4" />
+            <text x="146" y="24">render.php</text>
+            <line x1="130" y1="36" x2="350" y2="36" />
+            <rect class="art__line" x="146" y="49" width="116" height="6" rx="1" />
+            <rect class="art__line art__line--edit" x="146" y="63" width="96" height="6" rx="1" />
+            <rect class="art__caret" x="246" y="60" width="2" height="13" />
+            <rect class="art__line" x="146" y="77" width="84" height="6" rx="1" />
+            <rect class="art__line" x="146" y="91" width="56" height="6" rx="1" />
+          </g>
+
+          {
+            [18, 182, 346].map((x, i) => (
+              <g class="art__page">
+                <rect class="art__card" x={x} y="166" width="116" height="150" rx="4" />
+                <circle cx={x + 12} cy="181" r="1.7" />
+                <circle cx={x + 20} cy="181" r="1.7" />
+                <circle cx={x + 28} cy="181" r="1.7" />
+                <line x1={x + 1} y1="192" x2={x + 115} y2="192" />
+                <rect class="art__bar" x={x + 14} y="206" width="60" height="8" rx="1" />
+                <rect class="art__line" x={x + 14} y="224" width="88" height="4" rx="1" />
+                <rect class="art__line" x={x + 14} y="234" width="64" height="4" rx="1" />
+                <rect class="art__slot" x={x + 14} y="248" width="88" height="48" rx="2" />
+                <text x={x + 58} y="334" text-anchor="middle">
+                  {['page 12', 'page 41', 'page 77'][i]}
+                </text>
+              </g>
+            ))
+          }
+        </svg>
+        <figcaption class="art__cap">
+          One template edit. Every instance of it, on every page.
+        </figcaption>
+        <p class="art__note">
+          Block patterns bake their markup into the post. Here it stays in the folder. And it costs
+          nothing: no account, no key, and the one dependency — ACF or SCF — has a free edition
+          that is enough.
+        </p>
+      </figure>
+    </section>
+  </div>
 
   <section class="wrap showcase" aria-labelledby="showcase-title">
     <div class="showcase__head">
@@ -202,13 +269,51 @@ const showcaseCss = componentCss(showcase);
 </Base>
 
 <style>
+  /* The hero leaves the text column and takes the whole viewport: a band
+     with a faint dot grid, cut off at the bottom by a single rule. */
+  .hero-band {
+    position: relative;
+    border-block-end: 1px solid var(--rule);
+    background:
+      radial-gradient(
+        48rem 22rem at 84% -12%,
+        color-mix(in oklab, var(--accent) 9%, transparent),
+        transparent 72%
+      ),
+      linear-gradient(180deg, var(--paper-sunk), var(--paper) 72%);
+  }
+
+  .hero-band::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--ink) 16%, transparent) 1px,
+      transparent 1.2px
+    );
+    background-size: 24px 24px;
+    mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.5), transparent 72%);
+    pointer-events: none;
+  }
+
   .hero {
-    padding-block: clamp(3rem, 6vw, 5.5rem) clamp(2rem, 4vw, 3rem);
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    padding-block: clamp(2.5rem, 5vw, 4.25rem) clamp(2.5rem, 4.5vw, 3.75rem);
+  }
+
+  .hero__text {
+    min-width: 0;
+    max-width: 44rem;
   }
 
   .hero h1 {
-    max-width: 24ch;
-    margin-block: 0.6rem 1rem;
+    max-width: 22ch;
+    margin-block: 0.55rem 1.05rem;
+    font-size: clamp(2.05rem, 1.1rem + 3.2vw, 3.15rem);
   }
 
   .hero__actions {
@@ -223,11 +328,219 @@ const showcaseCss = componentCss(showcase);
     font-size: 1.05rem;
   }
 
+  /* The picture: one template, three pages, one edit reaching all of them.
+     Drawn rather than photographed, so it stays crisp and costs one request
+     fewer than nothing. */
+  .hero__art {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .art {
+    display: block;
+    width: 100%;
+    max-width: 32rem;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .art text {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    fill: var(--ink-faint);
+  }
+
+  .art__card {
+    fill: var(--paper);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+
+  .art__src text {
+    font-size: 13px;
+    fill: var(--ink-soft);
+  }
+
+  .art__src line,
+  .art__page line {
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+
+  .art__line {
+    fill: var(--rule-strong);
+  }
+
+  .art__line--edit,
+  .art__bar {
+    fill: var(--accent);
+    transform-box: fill-box;
+    transform-origin: 0% 50%;
+  }
+
+  .art__caret {
+    fill: var(--accent);
+  }
+
+  .art__slot {
+    fill: var(--paper-sunk);
+    stroke: var(--rule);
+    stroke-width: 1;
+  }
+
+  .art__page circle {
+    fill: var(--rule-strong);
+  }
+
+  .art__wires use {
+    fill: none;
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+  }
+
+  .art__flows use {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 10 1000;
+    opacity: 0;
+  }
+
+  .art__cap {
+    margin-top: 0.9rem;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  /* The third paragraph moved here: it explains what the drawing shows, so it
+     sits beside the drawing instead of pushing the buttons down the page. */
+  .art__note {
+    margin-top: 1.5rem;
+    padding-inline-start: 0.9rem;
+    border-inline-start: 2px solid var(--rule-strong);
+    max-width: 36rem;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  /* One cycle: the caret types an edit, the edit travels down the wires, all
+     three pages change together, everything resets. Ten seconds, then again. */
+  @media (prefers-reduced-motion: no-preference) {
+    .art__caret {
+      animation: art-caret 1.05s steps(1, end) infinite;
+    }
+
+    .art__line--edit {
+      animation: art-edit 10s ease-in-out infinite;
+    }
+
+    .art__flows use {
+      animation: art-flow 10s ease-in infinite;
+    }
+
+    .art__bar {
+      animation: art-bar 10s ease-in-out infinite;
+    }
+  }
+
+  @keyframes art-caret {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes art-edit {
+    0%,
+    14% {
+      transform: scaleX(1);
+    }
+    22%,
+    86% {
+      transform: scaleX(1.4);
+    }
+    96%,
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes art-flow {
+    0%,
+    24% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+    26% {
+      opacity: 1;
+    }
+    52% {
+      stroke-dashoffset: -112;
+      opacity: 1;
+    }
+    54%,
+    100% {
+      stroke-dashoffset: -112;
+      opacity: 0;
+    }
+  }
+
+  @keyframes art-bar {
+    0%,
+    52% {
+      transform: scaleX(1);
+    }
+    60%,
+    88% {
+      transform: scaleX(1.42);
+    }
+    96%,
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (max-width: 64rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    .art {
+      max-width: 27rem;
+    }
+  }
+
+  /* The drawing shrinks with the column, and so does its type. Bump the
+     labels so they stay above 10px on a phone. */
+  @media (max-width: 40rem) {
+    .art text {
+      font-size: 16px;
+    }
+
+    .art__cap {
+      font-size: 0.625rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
   /* Four facts under the hero: the answer to "what does this cost" before
      anyone has to scroll for it. */
   .facts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
     gap: 1px;
     background: var(--rule);
     border: 1px solid var(--rule);
