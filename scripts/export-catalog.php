@@ -194,7 +194,7 @@ $catalog = array(
 	'plugin'     => array(
 		'name'    => 'PhoenixSEO Page Builder',
 		'version' => defined( 'SDCPB_VERSION' ) ? SDCPB_VERSION : '',
-		'repo'    => 'https://github.com/phoenixseo/sdc-page-builder',
+		'repo'    => 'https://github.com/phoenixseo/phoenixseo-page-builder',
 		'license' => 'GPL-2.0-or-later',
 	),
 	'components' => $entries,
